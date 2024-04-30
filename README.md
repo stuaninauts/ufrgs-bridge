@@ -9,7 +9,6 @@ Must have django and npm installed.
 After editing api files, run makemigrations to make new migrations
 
 ```bash
-cd ufrgs_bridge
 python manage.py makemigrations
 ```
 then do to apply them:
