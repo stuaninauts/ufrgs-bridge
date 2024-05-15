@@ -1,8 +1,7 @@
 from django.urls import path
-from .views import homepage, ActivityView
+from .views import LoginView, RegisterView
 
 urlpatterns = [
-    #path('home', hello),
-    path('', homepage),
-    path('list', ActivityView.as_view())
+    path('register/', RegisterView.as_view(), name='register'),
+    path('login/', LoginView.as_view(), name='login'),
 ]

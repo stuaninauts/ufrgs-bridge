@@ -1,25 +1,26 @@
+// src/Register.js
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const LoginPage = () => {
+const Register = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:8000/api/login/', { username, password });
-            localStorage.setItem('token', response.data.token);
+            const response = await axios.post('http://localhost:8000/api/register/', { username, password });
+            setSuccess('User registered successfully!');
             setError('');
-
+            
             navigate('/home', { state: { username } });
-
-            // Redirect or update the UI as needed
+            
         } catch (err) {
-            setError('Invalid credentials');
+            setError('Registration failed. Please try again.');
         }
     };
 
@@ -35,10 +36,11 @@ const LoginPage = () => {
                     <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                 </div>
                 {error && <p>{error}</p>}
-                <button type="submit">Login</button>
+                {success && <p>{success}</p>}
+                <button type="submit">Register</button>
             </form>
         </div>
     );
 };
 
-export default LoginPage;
+export default Register;
