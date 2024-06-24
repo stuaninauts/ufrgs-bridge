@@ -1,6 +1,6 @@
 # UFRGS Bridge
 
-explanation
+to see users access: http://localhost:8000/admin and login with user: pessoal | password: pessoal
 
 ## Install and run the project
 
