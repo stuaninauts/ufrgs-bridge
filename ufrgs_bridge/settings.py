@@ -44,6 +44,14 @@ INSTALLED_APPS = [
     'corsheaders'
 ]
 
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp-mail.outlook.com'
+EMAIL_HOST_USER = "oficialufrgs@outlook.com"
+EMAIL_HOST_PASSWORD = "ufrgs123!"
+
 AUTH_USER_MODEL = 'api.User'
 
 REST_FRAMEWORK = {

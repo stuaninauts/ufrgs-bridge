@@ -9,6 +9,7 @@ const Auth = () => {
     const [password, setPassword] = useState('');
     const [role, setRole] = useState('student');
     const [error, setError] = useState('');
+    const [message, setMessage] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -21,6 +22,11 @@ const Auth = () => {
             const response = await axios.post(url, user);
             console.log(response.data);
             setError('');  // Clear error if request is successful
+            if (isRegister) {
+                setMessage('Registration successful! Please check your email to activate your account.');
+            } else {
+                setMessage('Login successful!');
+            }
         } catch (error) {
             setError(error.response.data);
             console.error(error.response.data);
@@ -54,6 +60,7 @@ const Auth = () => {
                 )}
                 <button type="submit">{isRegister ? 'Register' : 'Login'}</button>
                 {error && <div style={{ color: 'red' }}>{JSON.stringify(error)}</div>}
+                {message && <div style={{ color: 'green' }}>{message}</div>}
             </form>
         </div>
     );
