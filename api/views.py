@@ -3,11 +3,12 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-from .serializer import UserSerializer
+from rest_framework.generics import ListAPIView
+from .serializer import UserSerializer, ProjectSerializer
 from django.core.mail import send_mail
 from django.conf import settings
-from .models import User
-from django.shortcuts import get_object_or_404
+from .models import User, Project
+from django.shortcuts import get_object_or_404, render, redirect
 
 class RegisterView(APIView):
     permission_classes = [AllowAny]
@@ -56,3 +57,18 @@ class ActivateView(APIView):
         user.activation_token = None  # Clear the activation token after activation
         user.save()
         return Response({"message": "Account activated successfully."}, status=status.HTTP_200_OK)
+
+class ProjectCreateView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = ProjectSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Project created successfully."}, status=status.HTTP_201_CREATED)
+        else: 
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class ProjectListView(ListAPIView):
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer

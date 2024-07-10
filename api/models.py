@@ -67,3 +67,15 @@ class User(AbstractBaseUser):
 
     def has_module_perms(self, app_label):
         return self.is_admin
+
+class Project(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.TextField(max_length=1000)
+    contactEmail = models.EmailField()
+    
+    class Meta:
+        verbose_name = "Project"
+        verbose_name_plural = "Projects"
+
+    def __str__(self):
+        return self.title

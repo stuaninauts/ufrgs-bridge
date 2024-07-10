@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import User
+from .models import Project
 import uuid
 
 class UserSerializer(serializers.ModelSerializer):
@@ -25,3 +26,9 @@ class UserSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     unique_code = serializers.CharField()
     password = serializers.CharField(write_only=True)
+
+
+class ProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Project
+        fields = ('id', 'title', 'description', 'contactEmail')
