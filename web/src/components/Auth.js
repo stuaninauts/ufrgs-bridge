@@ -10,6 +10,7 @@ const Auth = () => {
     const [role, setRole] = useState('student');
     const [error, setError] = useState('');
     const [message, setMessage] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -26,6 +27,8 @@ const Auth = () => {
                 setMessage('Registration successful! Please check your email to activate your account.');
             } else {
                 setMessage('Login successful!');
+                navigate('/home', { state: { fullName: response.data.full_name } });
+
             }
         } catch (error) {
             setError(error.response.data);

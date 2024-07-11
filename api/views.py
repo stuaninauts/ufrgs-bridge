@@ -40,7 +40,7 @@ class LoginView(APIView):
 
         if user is not None:
             if user.is_active:
-                return Response({"message": "Login successful"}, status=status.HTTP_200_OK)
+                return Response({"message": "Login successful", "full_name": user.full_name}, status=status.HTTP_200_OK)
             else:
                 return Response({"error": "Account not activated. Please check your email."}, status=status.HTTP_403_FORBIDDEN)
         else:
