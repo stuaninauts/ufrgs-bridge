@@ -11,6 +11,7 @@ const Auth = () => {
     const [role, setRole] = useState('student');
     const [error, setError] = useState('');
     const [message, setMessage] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();

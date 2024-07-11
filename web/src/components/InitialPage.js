@@ -13,10 +13,9 @@ export default class InitialPage extends Component {
     return (
       <Router>
         <Routes>
-          <Route exact path="/" element={<p>em desenvolvimento...</p>} />
+          <Route path="/" element={<Auth />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/home" element={<HomePage />} />
-          <Route path="/auth" element={<Auth />} />
         </Routes>
       </Router>
     );

@@ -40,11 +40,11 @@ class LoginView(APIView):
 
         if user is not None:
             if user.is_active:
-                return Response({"message": "Login successful"}, status=status.HTTP_200_OK)
+                return Response({"message": "Login feito com sucesso", "full_name": user.full_name}, status=status.HTTP_200_OK)
             else:
-                return Response({"error": "Account not activated. Please check your email."}, status=status.HTTP_403_FORBIDDEN)
+                return Response({"error": "Conta não ativada. Por favor, cheque seu email."}, status=status.HTTP_403_FORBIDDEN)
         else:
-            return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Credenciais inválidas!"}, status=status.HTTP_400_BAD_REQUEST)
 
 class ActivateView(APIView):
     permission_classes = [AllowAny]

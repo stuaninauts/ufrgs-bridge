@@ -1,0 +1,20 @@
+{
+    "id": 5,
+    "title": "Gerenciamento de Processos de Negócio",
+    "description": "
+    O projeto de extensão é na área de Gerenciamento de Processos de Negócio (Business Process Management - BPM), com ênfase em Mineração de Processos, Processamento de Linguagem Natural, Automação de Processos Robóticos (RPA).
+
+    Conhecimento nas áreas mencionadas é desejável, mas não obrigatório. 
+    
+    O aluno terá a oportunidade de conhecer novos conceitos, tecnologias e interagir com outros orientandos.
+
+    Início das atividades: Agosto/Setembro de 2024.
+    
+    Carga-horária: 20h semanais (a combinar). Libero durante o período de avaliações.
+
+    Valor da bolsa: Os valores das mensalidades podem ser consultados em: www.ufrgs.br/propesq
+    
+    As atividades serão realizadas de forma presencial e remota.
+    ",
+    "contactEmail": "00246924@ufrgs.br"
+}
