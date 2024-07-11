@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Auth = () => {
@@ -23,9 +24,11 @@ const Auth = () => {
             console.log(response.data);
             setError('');  // Clear error if request is successful
             if (isRegister) {
-                setMessage('Registration successful! Please check your email to activate your account.');
+                setMessage('Cadastro feito com sucesso! Por favor, acesse seu email para verificar a sua conta.');
             } else {
                 setMessage('Login successful!');
+                navigate('/home', { state: { fullName: response.data.full_name } });
+
             }
         } catch (error) {
             setError(error.response.data);
@@ -36,29 +39,46 @@ const Auth = () => {
     return (
         <div>
             <button onClick={() => setIsRegister(!isRegister)}>
-                {isRegister ? 'Switch to Login' : 'Switch to Register'}
+                {isRegister ? 'Trocar para Login' : 'Trocar para Cadastro'}
             </button>
             <form onSubmit={handleSubmit}>
                 {isRegister && (
-                    <>
-                        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" required />
-                        <input type="text" value={uniqueCode} onChange={(e) => setUniqueCode(e.target.value)} placeholder="Unique Code" required />
-                        <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Full Name" required />
-                        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" required />
+                    <>  
+                        <label for="email">Email</label>
+                        <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="00123456@ufrgs.br" required />
+                        <br />
+                        
+                        <label for="matricula">Número de Matrícula</label>
+                        <input id="matricula" type="text" value={uniqueCode} onChange={(e) => setUniqueCode(e.target.value)} placeholder="00123456" required />
+                        <br />
+
+                        <label for="nome">Nome</label>
+                        <input id="nome" type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Nome Sobrenome" required />
+                        <br />
+
+                        <label for="senha">Senha</label>
+                        <input id="senha" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Senha" required />
+                        <br />
+
                         <select value={role} onChange={(e) => setRole(e.target.value)} required>
-                            <option value="student">Student</option>
-                            <option value="tech">Tech</option>
+                            <option value="student">Estudante</option>
                             <option value="professor">Professor</option>
+                            <option value="tech">Técnico Administrativo</option>
                         </select>
                     </>
                 )}
                 {!isRegister && (
                     <>
-                        <input type="text" value={uniqueCode} onChange={(e) => setUniqueCode(e.target.value)} placeholder="Unique Code" required />
-                        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" required />
+                        <label for="matricula">Matrícula</label>
+                        <input id="matricula" type="text" value={uniqueCode} onChange={(e) => setUniqueCode(e.target.value)} placeholder="00123456" required />
+                        <br />
+
+                        <label for="senha">Senha</label>
+                        <input id="senha"type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Senha" required />
+                        <br />
                     </>
                 )}
-                <button type="submit">{isRegister ? 'Register' : 'Login'}</button>
+                <button type="submit">{isRegister ? 'Cadastrar' : 'Login'}</button>
                 {error && <div style={{ color: 'red' }}>{JSON.stringify(error)}</div>}
                 {message && <div style={{ color: 'green' }}>{message}</div>}
             </form>

@@ -13,7 +13,7 @@ export default class InitialPage extends Component {
     return (
       <Router>
         <Routes>
-          <Route exact path="/" element={<p>TESTE ABCD=This is the init page but should navigate to /register that has an option for /login or a page that merges the two (which is probably better)</p>} />
+          <Route exact path="/" element={<p>em desenvolvimento...</p>} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="/auth" element={<Auth />} />

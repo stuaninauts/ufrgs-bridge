@@ -6,6 +6,6 @@ export default class SearchPage extends Component {
     }
 
     render(){
-        return <h1>this is the SearchPageaa</h1>
+        return <h1>página de busca (em desenvolvimento ...)</h1>
     }
 }
