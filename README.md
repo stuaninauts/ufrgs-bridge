@@ -4,6 +4,10 @@ to see users access: http://localhost:8000/admin and login with user: pessoal | 
 
 ## Install and run the project
 
+todo: 
+run_windows.bat
+run_linux.sh
+
 Must have django and npm installed.
 
 Install dependencies
