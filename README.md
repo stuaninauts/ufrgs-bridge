@@ -35,3 +35,67 @@ npm run dev
 
 folders explanation
 
+## Roadmap Casos de Uso
+
+### Prioridade Alta
+
+- UC1 Logar na Plataforma
+    - [X] Backend
+    - [ ] Frontend (stuani & afonso)
+- UC2 Cadastrar na Plataforma
+    - [X] Backend
+    - [ ] Frontend (stuani & afonso)
+- UC3 Validar Conta
+    - [X] Backend
+    - [ ] Frontend (stuani & afonso)
+- UC4 Criar Projeto de Extensão
+    - [X] Backend
+    - [ ] Frontend (stuani & afonso)
+- UC7 Criar Formulário de Inscrição para o Projeto de Extensão
+    - [ ] Backend (bea)
+    - [ ] Frontend
+- UC8 Candidatar-se ao Projeto
+    - [ ] Backend (bea)
+    - [ ] Frontend
+- UC9 Avaliar Inscrição do Candidato
+    - [ ] Backend (bea)
+    - [ ] Frontend
+- UC14 Listar Projetos de Extensão
+    - [X] Backend
+    - [ ] Frontend (stuani & afonso)
+
+### Prioridade Média
+
+- UC10 Adicionar Atividade do Projeto de Extensão
+    - [ ] Backend
+    - [ ] Frontend
+- UC11 Propor Registro de Atividade do Projeto de Extensão
+    - [ ] Backend
+    - [ ] Frontend
+- UC12 Avaliar Proposta de Atividade Realizada
+    - [ ] Backend
+    - [ ] Frontend
+- UC13 Acessar Perfil
+    - [ ] Backend
+    - [ ] Frontend
+- UC15 Pesquisar Projetos de Extensão
+    - [ ] Backend
+    - [ ] Frontend
+- UC16 Trocar Disponibilidade para Inscrição no Projeto de Extensão
+    - [ ] Backend
+    - [ ] Frontend
+- UC17 Trocar Disponibilidade de Realização de Atividades no Projeto
+    - [ ] Backend
+    - [ ] Frontend
+- UC18 Editar Informações do Projeto de Extensão
+    - [ ] Backend
+    - [ ] Frontend
+
+### Prioridade Baixa
+
+- UC5 Sugerir Ideia de Projeto de Extensão
+    - [ ] Backend
+    - [ ] Frontend
+- UC6 Avaliar Ideia de Projeto de Extensão
+    - [ ] Backend
+    - [ ] Frontend
