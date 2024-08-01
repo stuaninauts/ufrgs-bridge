@@ -27,7 +27,6 @@ class LoginSerializer(serializers.Serializer):
     unique_code = serializers.CharField()
     password = serializers.CharField(write_only=True)
 
-
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project

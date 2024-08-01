@@ -10,6 +10,12 @@ from django.conf import settings
 from .models import User, Project
 from django.shortcuts import get_object_or_404, render, redirect
 
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+
+from rest_framework.authtoken.models import Token
+
 class RegisterView(APIView):
     permission_classes = [AllowAny]
 
@@ -25,7 +31,10 @@ class RegisterView(APIView):
                 [user.email],
                 fail_silently=False,
             )
-            return Response({"message": "Registration successful. Please check your email to activate your account."}, status=status.HTTP_201_CREATED)
+            token = Token.objects.create(user=user)
+            return Response({"message": "Registration successful. Please check your email to activate your account.",
+                             "token": token.key, "user": serializer.data}, 
+                            status=status.HTTP_201_CREATED,)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -37,14 +46,19 @@ class LoginView(APIView):
         password = request.data.get('password')
 
         user = authenticate(username=unique_code, password=password)
+        token, created = Token.objects.get_or_create(user=user)
 
         if user is not None:
             if user.is_active:
-                return Response({"message": "Login feito com sucesso", "full_name": user.full_name}, status=status.HTTP_200_OK)
+                return Response({"message": "Login feito com sucesso",
+                                 "full_name": user.full_name,
+                                 "token": token.key,
+                                 "role": user.role}, status=status.HTTP_200_OK)
             else:
                 return Response({"error": "Conta não ativada. Por favor, cheque seu email."}, status=status.HTTP_403_FORBIDDEN)
         else:
             return Response({"error": "Credenciais inválidas!"}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class ActivateView(APIView):
     permission_classes = [AllowAny]
@@ -59,7 +73,8 @@ class ActivateView(APIView):
         return Response({"message": "Account activated successfully."}, status=status.HTTP_200_OK)
 
 class ProjectCreateView(APIView):
-    permission_classes = [AllowAny]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         serializer = ProjectSerializer(data=request.data)
@@ -68,7 +83,7 @@ class ProjectCreateView(APIView):
             return Response({"message": "Project created successfully."}, status=status.HTTP_201_CREATED)
         else: 
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+        
 class ProjectListView(ListAPIView):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer

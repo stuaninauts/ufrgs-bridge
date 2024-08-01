@@ -23,12 +23,12 @@ const Auth = () => {
             const url = isRegister ? '/api/register/' : '/api/login/';
             const response = await axios.post(url, user);
             console.log(response.data);
-            setError('');  // Clear error if request is successful
+            setError('');  
             if (isRegister) {
                 setMessage('Cadastro feito com sucesso! Por favor, acesse seu email para verificar a sua conta.');
             } else {
                 setMessage('Login successful!');
-                navigate('/home', { state: { fullName: response.data.full_name } });
+                navigate('/home', { state: {fullName: response.data.full_name, token: response.data.token, role: response.data.role} });
 
             }
         } catch (error) {
