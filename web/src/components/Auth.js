@@ -38,51 +38,69 @@ const Auth = () => {
     };
 
     return (
-        <div>
-            <button onClick={() => setIsRegister(!isRegister)}>
-                {isRegister ? 'Trocar para Login' : 'Trocar para Cadastro'}
-            </button>
-            <form onSubmit={handleSubmit}>
-                {isRegister && (
-                    <>  
-                        <label for="email">Email</label>
-                        <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="00123456@ufrgs.br" required />
-                        <br />
-                        
-                        <label for="matricula">Número de Matrícula</label>
-                        <input id="matricula" type="text" value={uniqueCode} onChange={(e) => setUniqueCode(e.target.value)} placeholder="00123456" required />
-                        <br />
-
-                        <label for="nome">Nome</label>
-                        <input id="nome" type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Nome Sobrenome" required />
-                        <br />
-
-                        <label for="senha">Senha</label>
-                        <input id="senha" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Senha" required />
-                        <br />
-
-                        <select value={role} onChange={(e) => setRole(e.target.value)} required>
-                            <option value="student">Estudante</option>
-                            <option value="professor">Professor</option>
-                            <option value="tech">Técnico Administrativo</option>
-                        </select>
-                    </>
-                )}
-                {!isRegister && (
-                    <>
-                        <label for="matricula">Matrícula</label>
-                        <input id="matricula" type="text" value={uniqueCode} onChange={(e) => setUniqueCode(e.target.value)} placeholder="00123456" required />
-                        <br />
-
-                        <label for="senha">Senha</label>
-                        <input id="senha"type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Senha" required />
-                        <br />
-                    </>
-                )}
-                <button type="submit">{isRegister ? 'Cadastrar' : 'Login'}</button>
-                {error && <div style={{ color: 'red' }}>{JSON.stringify(error)}</div>}
-                {message && <div style={{ color: 'green' }}>{message}</div>}
-            </form>
+        <div className="min-h-screen flex items-center justify-center bg-gray-900">
+            <div className="max-w-md w-full bg-gray-800 rounded-lg p-8 space-y-6 shadow-lg">
+                <div className="text-center">
+                    <img src="logo.png" alt="Logo" className="mx-auto h-12 w-12 rounded-full" />
+                    <h2 className="mt-6 text-3xl font-extrabold text-white">
+                        {isRegister ? 'CADASTRO' : 'LOGIN'}
+                    </h2>
+                </div>
+                <form className="space-y-4" onSubmit={handleSubmit}>
+                    {isRegister && (
+                        <>
+                            <div>
+                                <label htmlFor="email" className="block text-sm font-medium text-white">Email</label>
+                                <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full p-2 rounded bg-gray-700 text-white" placeholder="00123456@ufrgs.br" required />
+                            </div>
+                            <div>
+                                <label htmlFor="matricula" className="block text-sm font-medium text-white">Número de Matrícula</label>
+                                <input id="matricula" type="text" value={uniqueCode} onChange={(e) => setUniqueCode(e.target.value)} className="w-full p-2 rounded bg-gray-700 text-white" placeholder="00123456" required />
+                            </div>
+                            <div>
+                                <label htmlFor="nome" className="block text-sm font-medium text-white">Nome</label>
+                                <input id="nome" type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} className="w-full p-2 rounded bg-gray-700 text-white" placeholder="Nome Sobrenome" required />
+                            </div>
+                            <div>
+                                <label htmlFor="senha" className="block text-sm font-medium text-white">Senha</label>
+                                <input id="senha" type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-2 rounded bg-gray-700 text-white" placeholder="Senha" required />
+                            </div>
+                            <div>
+                                <label htmlFor="role" className="block text-sm font-medium text-white">Cargo</label>
+                                <select id="role" value={role} onChange={(e) => setRole(e.target.value)} className="w-full p-2 rounded bg-gray-700 text-white" required>
+                                    <option value="student">Estudante</option>
+                                    <option value="professor">Professor</option>
+                                    <option value="tech">Técnico Administrativo</option>
+                                </select>
+                            </div>
+                        </>
+                    )}
+                    {!isRegister && (
+                        <>
+                            <div>
+                                <label htmlFor="matricula" className="block text-sm font-medium text-white">Matrícula</label>
+                                <input id="matricula" type="text" value={uniqueCode} onChange={(e) => setUniqueCode(e.target.value)} className="w-full p-2 rounded bg-gray-700 text-white" placeholder="00123456" required />
+                            </div>
+                            <div>
+                                <label htmlFor="senha" className="block text-sm font-medium text-white">Senha</label>
+                                <input id="senha" type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-2 rounded bg-gray-700 text-white" placeholder="Senha" required />
+                            </div>
+                        </>
+                    )}
+                    <div>
+                        <button type="submit" className="w-full p-2 bg-red-600 rounded text-white">
+                            {isRegister ? 'Cadastrar' : 'Login'}
+                        </button>
+                    </div>
+                    {error && <div className="text-red-500 text-sm mt-2">{JSON.stringify(error)}</div>}
+                    {message && <div className="text-green-500 text-sm mt-2">{message}</div>}
+                </form>
+                <div className="mt-6 text-center">
+                    <button onClick={() => setIsRegister(!isRegister)} className="text-white hover:text-gray-400">
+                        {isRegister ? 'Trocar para Login' : 'Trocar para Cadastro'}
+                    </button>
+                </div>
+            </div>
         </div>
     );
 };
