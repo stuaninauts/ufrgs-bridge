@@ -4,7 +4,13 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}",
     '../templates/**/*.html',
   ],
+  darkMode: 'class',
   theme: {
+    extend: {
+      // possiveis configs
+    },
+  },
+  variants: {
     extend: {},
   },
   plugins: [],

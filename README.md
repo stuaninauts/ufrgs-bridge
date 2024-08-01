@@ -41,10 +41,10 @@ folders explanation
 
 - UC1 Logar na Plataforma
     - [X] Backend
-    - [ ] Frontend (stuani & afonso)
+    - [X] Frontend (stuani & afonso)
 - UC2 Cadastrar na Plataforma
     - [X] Backend
-    - [ ] Frontend (stuani & afonso)
+    - [X] Frontend (stuani & afonso)
 - UC3 Validar Conta
     - [X] Backend
     - [ ] Frontend (stuani & afonso)
