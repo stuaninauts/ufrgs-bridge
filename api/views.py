@@ -77,13 +77,31 @@ class ProjectCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        serializer = ProjectSerializer(data=request.data)
+
+        data = {
+            'title': request.data.get('title'),
+            'description': request.data.get('description'),
+            'contactEmail': request.data.get('contactEmail'),
+            'created_by': request.user.id
+        }
+
+        serializer = ProjectSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response({"message": "Project created successfully."}, status=status.HTTP_201_CREATED)
         else: 
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-class ProjectListView(ListAPIView):
+
+
+class ProjectMyListView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        projects = Project.objects.filter(created_by=request.user)
+        serializer = ProjectSerializer(projects, many=True)
+        return Response(serializer.data)
+
+class ProjectAllListView(ListAPIView):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer

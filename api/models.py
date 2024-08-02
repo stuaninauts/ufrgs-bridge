@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.core.exceptions import ValidationError
+from django.conf import settings
 
 def validate_ufrgs_email(value):
     if not value.endswith('@ufrgs.br'):
@@ -72,7 +73,8 @@ class Project(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(max_length=1000)
     contactEmail = models.EmailField()
-    
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # Link to User model
+
     class Meta:
         verbose_name = "Project"
         verbose_name_plural = "Projects"

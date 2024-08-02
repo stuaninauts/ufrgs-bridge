@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 import axios from 'axios';
 
 const HomePage = () => {
@@ -13,12 +14,14 @@ const HomePage = () => {
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
 
+    const [projects, setProjects] = useState([]);
+
     const handleSubmit = async (e) => {
         
         e.preventDefault();
         try {
             const response = await axios.post('/api/create_project/', 
-                { title, description, contactEmail },  
+                {title, description, contactEmail},  
                 {
                     headers: {
                         'Authorization': `Token ${token}`, 
@@ -29,6 +32,7 @@ const HomePage = () => {
             console.log(response);
             setMessage('Criou o projeto!');
             setError('');
+            fetchProjects();
         } catch (error) {
             console.log('Error caught:');
             console.log(error);  // Log the error for debugging
@@ -51,7 +55,24 @@ const HomePage = () => {
             //setError('Erro.');
             setMessage('');
         }
-    };    
+    };
+    
+    const fetchProjects = async () => {
+
+        try {
+            const response = await axios.get('/api/list_my_projects/', {
+                headers: { 'Authorization': `Token ${token}` }
+            });
+            setProjects(response.data);
+        } catch (error) {
+            console.error(error);
+            setError('Failed to fetch projects.');
+        }
+    };
+
+    useEffect(() => {
+        fetchProjects();  // Fetch projects on component mount
+    }, []);
 
     return (
         <div>
@@ -66,8 +87,19 @@ const HomePage = () => {
             </form>
             {message && <p>{message}</p>}
             {error && <p>{error}</p>}
+
+            <h1>My Projects</h1>
+            <ul>
+                {projects.map(project => (
+                    <li key={project.id}>
+                        <h2>{project.title}</h2>
+                        <p>{project.description}</p>
+                        <p>Contact: {project.contactEmail}</p>
+                    </li>
+                ))}
+            </ul>
+
         </div>
-        
     );
 };
 

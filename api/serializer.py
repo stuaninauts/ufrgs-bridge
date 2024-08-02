@@ -28,6 +28,8 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True)
 
 class ProjectSerializer(serializers.ModelSerializer):
+    created_by = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=True)  # Use ID instead of nested serializer  
+
     class Meta:
         model = Project
-        fields = ('id', 'title', 'description', 'contactEmail')
+        fields = ('id', 'title', 'description', 'contactEmail', 'created_by')
