@@ -52,7 +52,6 @@ const HomePage = () => {
                 console.log('Error message:', error.message);
                 setError('Error: Request failed.');
             }
-            //setError('Erro.');
             setMessage('');
         }
     };
@@ -78,29 +77,49 @@ const HomePage = () => {
         <div>
             <h1>Bem vindo ao UFRGS Bridge, {fullName}!</h1>
 
-            <h1>Create a Project</h1>
-            <form onSubmit={handleSubmit}>
-                <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Titulo" required />
-                <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Descricao" required />
-                <input type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} placeholder="Contato" required />
-                <button type="submit">Create Project</button>
-            </form>
-            {message && <p>{message}</p>}
-            {error && <p>{error}</p>}
+            {role === 'professor' && (
+                <>
+                    <h1>Create a Project</h1>
+                    <form onSubmit={handleSubmit}>
+                        <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Titulo" required />
+                        <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Descricao" required />
+                        <input type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} placeholder="Contato" required />
+                        <button type="submit">Create Project</button>
+                    </form>
+                    {message && <p>{message}</p>}
+                    {error && <p>{error}</p>}
 
-            <h1>My Projects</h1>
-            <ul>
-                {projects.map(project => (
-                    <li key={project.id}>
-                        <h2>{project.title}</h2>
-                        <p>{project.description}</p>
-                        <p>Contact: {project.contactEmail}</p>
-                    </li>
-                ))}
-            </ul>
+                    <h1>My Projects</h1>
+                    <ul>
+                        {projects.map(project => (
+                            <li key={project.id}>
+                                <h2>{project.title}</h2>
+                                <p>{project.description}</p>
+                                <p>Contact: {project.contactEmail}</p>
+                            </li>
+                        ))}
+                    </ul>
+                </>
+            )}
 
+            {role === 'student' && (
+                <>
+                    <h1>All Projects STUDENT</h1>
+                    <ul>
+                        {projects.map(project => (
+                            <li key={project.id}>
+                                <h2>{project.title}</h2>
+                                <p>{project.description}</p>
+                                <p>Contact: {project.contactEmail}</p>
+                                <button onClick={() => setSelectedProject(project)}>Apply to this project</button>
+                            </li>
+                        ))}
+                    </ul>
+                </>
+            )}
         </div>
     );
 };
+
 
 export default HomePage;
