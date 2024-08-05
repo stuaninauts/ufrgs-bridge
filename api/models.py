@@ -82,13 +82,19 @@ class Project(models.Model):
 
     def __str__(self):
         return self.title
-
+    
 class ApplicationForm(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    questions = models.TextField(help_text="Comma-separated list of questions")
+    questions = models.TextField(default="When did you join the University?, What course are you in?, Why are you interested in this project?")  # Default questions
+    additional_questions = models.TextField(blank=True, null=True, help_text="Additional questions added by the professor")
 
     def __str__(self):
         return f"Form for {self.project.title}"
+    
+    def get_full_questions(self):
+        default_questions = self.questions.split(',') 
+        additional_questions = self.additional_questions.split(',') if self.additional_questions else []
+        return default_questions + additional_questions
     
 class ApplicationResponse(models.Model):
     form = models.ForeignKey(ApplicationForm, on_delete=models.CASCADE)

@@ -37,11 +37,9 @@ class ProjectSerializer(serializers.ModelSerializer):
 class ApplicationFormSerializer(serializers.ModelSerializer):
     class Meta:
         model = ApplicationForm
-        fields = ('id', 'project', 'questions')
-
+        fields = ('id', 'project', 'questions', 'additional_questions')
 
 class ApplicationResponseSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = ApplicationResponse
         fields = ('id', 'form', 'student', 'answers')

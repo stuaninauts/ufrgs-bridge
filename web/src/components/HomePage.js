@@ -16,9 +16,10 @@ const HomePage = () => {
 
     const [projects, setProjects] = useState([]);
 
-    const [questions, setQuestions] = useState('');
+    const [additionalQuestions, setAdditionalQuestions] = useState('');
     const [formMessage, setFormMessage] = useState('');
     const [formError, setFormError] = useState('');
+    const [selectedProject, setSelectedProject] = useState(null);
 
     const handleSubmit = async (e) => {
         
@@ -35,6 +36,7 @@ const HomePage = () => {
             );
             console.log(response);
             setMessage('Criou o projeto!');
+            fetchProjects(role);
             setError('');
             fetchProjects();
         } catch (error) {
@@ -62,14 +64,21 @@ const HomePage = () => {
 
     const handleFormSubmit = async (e) => {
         e.preventDefault();
+        if (!selectedProject) {
+            setFormError('Please select a project.');
+            return;
+        }
+
         try {
             const response = await axios.post('/api/create_form/', 
-                { project: selectedProject.id, questions },  
-                { headers: { 
-                    'Authorization': `Token ${token}`, 
-                    'Content-Type': 'application/json' } }
+                { 
+                    project: selectedProject.id, 
+                    additional_questions: additionalQuestions 
+                },  
+                { headers: { 'Authorization': `Token ${token}`, 'Content-Type': 'application/json' } }
             );
             setFormMessage('Application form created successfully.');
+            console.log(additionalQuestions);
             setFormError('');
         } catch (error) {
             console.log(error);
@@ -129,12 +138,12 @@ const HomePage = () => {
                     <b><h1>Create an Application Form</h1></b>
                     <form onSubmit={handleFormSubmit}>
                         <select onChange={(e) => setSelectedProject(projects.find(p => p.id === parseInt(e.target.value)))}>
-                            <option>Select Project</option>
+                            <option value="">Select Project</option>
                             {projects.map(project => (
                                 <option key={project.id} value={project.id}>{project.title}</option>
                             ))}
                         </select>
-                        <textarea value={questions} onChange={(e) => setQuestions(e.target.value)} placeholder="Comma-separated questions" required />
+                        <textarea value={additionalQuestions} onChange={(e) => setAdditionalQuestions(e.target.value)} placeholder="Comma-separated additional questions" />
                         <button type="submit">Create Form</button>
                     </form>
                     {formMessage && <p>{formMessage}</p>}
@@ -148,10 +157,12 @@ const HomePage = () => {
                     <ul>
                         {projects.map(project => (
                             <li key={project.id}>
+                                <br />
                                 <h2>{project.title}</h2>
                                 <p>{project.description}</p>
                                 <p>Contact: {project.contactEmail}</p>
                                 <button onClick={() => setSelectedProject(project)}>Apply to this project</button>
+                                
                             </li>
                         ))}
                     </ul>
@@ -160,6 +171,5 @@ const HomePage = () => {
         </div>
     );
 };
-
 
 export default HomePage;

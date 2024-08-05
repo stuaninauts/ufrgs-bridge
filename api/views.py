@@ -117,17 +117,31 @@ class ApplicationFormCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        project_id = request.data.get('project')
+        additional_questions = request.data.get('additional_questions')  
+        print(additional_questions)
+
+        existing_form = ApplicationForm.objects.filter(project=project_id).first()
+
         data = {
-            'project' : request.data.get('project'),
-            'questions': request.data.get('questions')
+            'project': project_id,
+            'additional_questions': additional_questions 
         }
-        serializer = ApplicationFormSerializer(data=data)
+
+        if existing_form:
+            serializer = ApplicationFormSerializer(existing_form, data=data, partial=True)
+        else:
+            serializer = ApplicationFormSerializer(data=data)
+
         if serializer.is_valid():
             serializer.save()
-            return Response({"message": "Application form created successfully."}, status=status.HTTP_201_CREATED)
+            if existing_form:
+                message = "Application form updated successfully."
+            else:
+                message = "Application form created successfully."
+            return Response({"message": message}, status=status.HTTP_201_CREATED if not existing_form else status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class ApplicationResponseListView(APIView):
     authentication_classes = [TokenAuthentication]
