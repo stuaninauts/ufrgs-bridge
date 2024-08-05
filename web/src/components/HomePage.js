@@ -21,6 +21,9 @@ const HomePage = () => {
     const [formError, setFormError] = useState('');
     const [selectedProject, setSelectedProject] = useState(null);
 
+    const [formQuestions, setFormQuestions] = useState([]);
+    const [answers, setAnswers] = useState('');
+
     const handleSubmit = async (e) => {
         
         e.preventDefault();
@@ -105,6 +108,49 @@ const HomePage = () => {
         fetchProjects(role);  // Fetch projects on component mount
     }, [role]);
 
+    const fetchFormDetails = async (projectId) => {
+        try {
+            const response = await axios.get(`/api/form_details/${projectId}/`, {
+                headers: { 'Authorization': `Token ${token}` }
+            });
+            setFormQuestions(response.data.questions);
+        } catch (error) {
+            console.error('Failed to fetch form details:', error);
+            setError('Failed to fetch form details.');
+        }
+    };
+
+    const handleApply = async (e) => {
+        e.preventDefault();
+        if (!selectedProject) {
+            setError('Please select a project.');
+            return;
+        }
+
+        console.log(selectedProject.id);
+
+        try {
+            await axios.post('/api/apply_to_project/', 
+                { 
+                    project: selectedProject.id, 
+                    answers: answers 
+                },  
+                { headers: { 'Authorization': `Token ${token}`, 'Content-Type': 'application/json' } }
+            );
+            setMessage('Application submitted successfully.');
+            setError('');
+        } catch (error) {
+            console.error('Failed to submit application:', error);
+            setError('Failed to submit application.');
+            setMessage('');
+        }
+    };
+
+    const handleProjectSelect = (project) => {
+        setSelectedProject(project);
+        fetchFormDetails(project.id);
+    };
+
     return (
         <div>
             <h1>Bem vindo ao UFRGS Bridge, {fullName}!</h1>
@@ -153,19 +199,40 @@ const HomePage = () => {
 
             {role === 'student' && (
                 <>
-                    <b><h1>ALL Projects</h1></b>
-                    <ul>
-                        {projects.map(project => (
-                            <li key={project.id}>
-                                <br />
-                                <h2>{project.title}</h2>
-                                <p>{project.description}</p>
-                                <p>Contact: {project.contactEmail}</p>
-                                <button onClick={() => setSelectedProject(project)}>Apply to this project</button>
-                                
-                            </li>
+                    <h1>All Projects</h1>
+            <ul>
+                {projects.map(project => (
+                    <li key={project.id}>
+                        <h2>{project.title}</h2>
+                        <p>{project.description}</p>
+                        <p>Contact: {project.contactEmail}</p>
+                        <button onClick={() => handleProjectSelect(project)}>Apply to this project</button>
+                        <br />
+                    </li>
+                ))}
+            </ul>
+
+            {selectedProject && (
+                <>
+                    <h2>Application Form for {selectedProject.title}</h2>
+                    <form onSubmit={handleApply}>
+                        {formQuestions.map((question, index) => (
+                            <div key={index}>
+                                <label>{question}</label>
+                                <input
+                                    type="text"
+                                    onChange={(e) => setAnswers(prev => ({ ...prev, [index]: e.target.value }))}
+                                    placeholder={`Answer for question ${index + 1}`}
+                                    required
+                                />
+                            </div>
                         ))}
-                    </ul>
+                        <button type="submit">Submit Application</button>
+                    </form>
+                    {message && <p>{message}</p>}
+                    {error && <p>{error}</p>}
+                </>
+            )}
                 </>
             )}
         </div>

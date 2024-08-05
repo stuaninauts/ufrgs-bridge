@@ -154,3 +154,43 @@ class ApplicationResponseListView(APIView):
         serializer = ApplicationResponseSerializer(responses, many=True)
         return Response(serializer.data)
     
+class ApplicationFormDetailView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, project_id):
+        project = get_object_or_404(Project, id=project_id)
+        form = ApplicationForm.objects.filter(project=project).first()
+        if not form:
+            return Response({"error": "No application form found for this project."}, status=status.HTTP_404_NOT_FOUND)
+
+        questions = form.get_full_questions()
+        return Response({"questions": questions}, status=status.HTTP_200_OK)
+
+class ApplyToProjectView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        project_id = request.data.get('project')
+        project = get_object_or_404(Project, id=project_id)
+        form = ApplicationForm.objects.filter(project=project).first()
+
+        answers_dict = request.data.get('answers')
+        answers_text = ', '.join(answers_dict.values())
+
+        if not form:
+            return Response({"error": "This project is not open for applications."}, status=status.HTTP_400_BAD_REQUEST)
+
+        data = {
+            'form': form.id,
+            'student': request.user.id,
+            'answers': answers_text,
+        }
+
+        serializer = ApplicationResponseSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Application submitted successfully."}, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
