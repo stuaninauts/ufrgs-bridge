@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from .models import User
-from .models import Project
+from .models import User, Project
+from .models import ApplicationForm, ApplicationResponse
 import uuid
 
 class UserSerializer(serializers.ModelSerializer):
@@ -33,3 +33,15 @@ class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = ('id', 'title', 'description', 'contactEmail', 'created_by')
+
+class ApplicationFormSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ApplicationForm
+        fields = ('id', 'project', 'questions')
+
+
+class ApplicationResponseSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ApplicationResponse
+        fields = ('id', 'form', 'student', 'answers')

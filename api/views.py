@@ -4,14 +4,17 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework.generics import ListAPIView
-from .serializer import UserSerializer, ProjectSerializer
 from django.core.mail import send_mail
 from django.conf import settings
-from .models import User, Project
 from django.shortcuts import get_object_or_404, render, redirect
 
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
-from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from .models import User, Project
+from .models import ApplicationForm, ApplicationResponse
+
+from .serializer import UserSerializer, ProjectSerializer
+from .serializer import ApplicationFormSerializer, ApplicationResponseSerializer
+
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
 from rest_framework.authtoken.models import Token
@@ -98,10 +101,42 @@ class ProjectMyListView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        projects = Project.objects.filter(created_by=request.user)
+        projects = Project.objects.filter(created_by=request.user.id)
         serializer = ProjectSerializer(projects, many=True)
         return Response(serializer.data)
 
-class ProjectAllListView(ListAPIView):
-    queryset = Project.objects.all()
-    serializer_class = ProjectSerializer
+class ProjectAllListView(APIView):
+
+    def get(self, request):
+        projects = Project.objects.all()
+        serializer = ProjectSerializer(projects, many=True)
+        return Response(serializer.data)
+    
+class ApplicationFormCreateView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        data = {
+            'project' : request.data.get('project'),
+            'questions': request.data.get('questions')
+        }
+        serializer = ApplicationFormSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Application form created successfully."}, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ApplicationResponseListView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, project_id):
+        project = get_object_or_404(Project, id=project_id, created_by=request.user.id)
+        forms = ApplicationForm.objects.filter(project=project)
+        responses = ApplicationResponse.objects.filter(form__in=forms)
+        serializer = ApplicationResponseSerializer(responses, many=True)
+        return Response(serializer.data)
+    

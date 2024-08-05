@@ -42,7 +42,8 @@ class User(AbstractBaseUser):
         ('admin', 'Admin'),
     )
 
-    email = models.EmailField(unique=True, validators=[validate_ufrgs_email])
+    #, validators=[validate_ufrgs_email]
+    email = models.EmailField(unique=True)
     unique_code = models.CharField(max_length=100, unique=True)
     full_name = models.CharField(max_length=255)
     password = models.CharField(max_length=128)
@@ -81,3 +82,18 @@ class Project(models.Model):
 
     def __str__(self):
         return self.title
+
+class ApplicationForm(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    questions = models.TextField(help_text="Comma-separated list of questions")
+
+    def __str__(self):
+        return f"Form for {self.project.title}"
+    
+class ApplicationResponse(models.Model):
+    form = models.ForeignKey(ApplicationForm, on_delete=models.CASCADE)
+    student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    answers = models.TextField()
+
+    def __str__(self):
+        return f"Response by {self.student.full_name} for {self.form.project.title}"

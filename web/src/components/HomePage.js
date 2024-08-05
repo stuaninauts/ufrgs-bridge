@@ -16,6 +16,10 @@ const HomePage = () => {
 
     const [projects, setProjects] = useState([]);
 
+    const [questions, setQuestions] = useState('');
+    const [formMessage, setFormMessage] = useState('');
+    const [formError, setFormError] = useState('');
+
     const handleSubmit = async (e) => {
         
         e.preventDefault();
@@ -55,11 +59,30 @@ const HomePage = () => {
             setMessage('');
         }
     };
-    
-    const fetchProjects = async () => {
 
+    const handleFormSubmit = async (e) => {
+        e.preventDefault();
         try {
-            const response = await axios.get('/api/list_my_projects/', {
+            const response = await axios.post('/api/create_form/', 
+                { project: selectedProject.id, questions },  
+                { headers: { 
+                    'Authorization': `Token ${token}`, 
+                    'Content-Type': 'application/json' } }
+            );
+            setFormMessage('Application form created successfully.');
+            setFormError('');
+        } catch (error) {
+            console.log(error);
+            setFormError('Error creating form.');
+            setFormMessage('');
+        }
+    };
+    
+    const fetchProjects = async (role) => {
+        const url = role === 'professor' ? '/api/list_my_projects/' : '/api/list_projects/';
+        
+        try {
+            const response = await axios.get(url, {
                 headers: { 'Authorization': `Token ${token}` }
             });
             setProjects(response.data);
@@ -70,41 +93,58 @@ const HomePage = () => {
     };
 
     useEffect(() => {
-        fetchProjects();  // Fetch projects on component mount
-    }, []);
+        fetchProjects(role);  // Fetch projects on component mount
+    }, [role]);
 
     return (
         <div>
             <h1>Bem vindo ao UFRGS Bridge, {fullName}!</h1>
+            <br></br>
 
             {role === 'professor' && (
                 <>
-                    <h1>Create a Project</h1>
+                    <b><h1>Create a Project</h1></b>
                     <form onSubmit={handleSubmit}>
                         <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Titulo" required />
                         <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Descricao" required />
                         <input type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} placeholder="Contato" required />
+                        
                         <button type="submit">Create Project</button>
                     </form>
                     {message && <p>{message}</p>}
                     {error && <p>{error}</p>}
-
-                    <h1>My Projects</h1>
+                    <br/>
+                    <b><h1>My Projects</h1></b>
                     <ul>
                         {projects.map(project => (
                             <li key={project.id}>
                                 <h2>{project.title}</h2>
                                 <p>{project.description}</p>
                                 <p>Contact: {project.contactEmail}</p>
+                                <br />
                             </li>
                         ))}
                     </ul>
+                    <br/>
+                    <b><h1>Create an Application Form</h1></b>
+                    <form onSubmit={handleFormSubmit}>
+                        <select onChange={(e) => setSelectedProject(projects.find(p => p.id === parseInt(e.target.value)))}>
+                            <option>Select Project</option>
+                            {projects.map(project => (
+                                <option key={project.id} value={project.id}>{project.title}</option>
+                            ))}
+                        </select>
+                        <textarea value={questions} onChange={(e) => setQuestions(e.target.value)} placeholder="Comma-separated questions" required />
+                        <button type="submit">Create Form</button>
+                    </form>
+                    {formMessage && <p>{formMessage}</p>}
+                    {formError && <p>{formError}</p>}
                 </>
             )}
 
             {role === 'student' && (
                 <>
-                    <h1>All Projects STUDENT</h1>
+                    <b><h1>ALL Projects</h1></b>
                     <ul>
                         {projects.map(project => (
                             <li key={project.id}>
