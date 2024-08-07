@@ -52,10 +52,10 @@ folders explanation
     - [X] Backend
     - [ ] Frontend (stuani & afonso)
 - UC7 Criar Formulário de Inscrição para o Projeto de Extensão
-    - [ ] Backend (bea)
+    - [x] Backend (bea)
     - [ ] Frontend
 - UC8 Candidatar-se ao Projeto
-    - [ ] Backend (bea)
+    - [x] Backend (bea)
     - [ ] Frontend
 - UC9 Avaliar Inscrição do Candidato
     - [ ] Backend (bea)
