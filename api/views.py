@@ -142,17 +142,6 @@ class ApplicationFormCreateView(APIView):
             return Response({"message": message}, status=status.HTTP_201_CREATED if not existing_form else status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class ApplicationResponseListView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, project_id):
-        project = get_object_or_404(Project, id=project_id, created_by=request.user.id)
-        forms = ApplicationForm.objects.filter(project=project)
-        responses = ApplicationResponse.objects.filter(form__in=forms)
-        serializer = ApplicationResponseSerializer(responses, many=True)
-        return Response(serializer.data)
     
 class ApplicationFormDetailView(APIView):
     authentication_classes = [TokenAuthentication]
@@ -166,6 +155,7 @@ class ApplicationFormDetailView(APIView):
 
         questions = form.get_full_questions()
         return Response({"questions": questions}, status=status.HTTP_200_OK)
+    
 
 class ApplyToProjectView(APIView):
     authentication_classes = [TokenAuthentication]
@@ -194,3 +184,67 @@ class ApplyToProjectView(APIView):
             return Response({"message": "Application submitted successfully."}, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+class ApplicationResponseListView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, project_id):
+        project = get_object_or_404(Project, id=project_id, created_by=request.user.id)
+        forms = ApplicationForm.objects.filter(project=project)
+        responses = ApplicationResponse.objects.filter(form__in=forms)
+        serializer = ApplicationResponseSerializer(responses, many=True)
+        print(serializer.data)
+        return Response(serializer.data)
+
+class ApplicationResponseDetailView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        app_response = get_object_or_404(ApplicationResponse, pk=pk)
+        
+        student_name = app_response.student.full_name
+        project_title = app_response.form.project.title
+        answers = app_response.answers
+        status = app_response.status
+
+        student = get_object_or_404(User, id=app_response.student.id)
+        print(student)
+        project = get_object_or_404(Project, id=app_response.form.project.id)
+
+        response_data = {
+            'student_name': student_name,
+            'project_title': project_title,
+            'answers': answers,
+            'status': status
+        }
+
+        status = request.data.get('action')
+        if status in ['accepted', 'rejected']:
+            app_response.status = status
+            app_response.save()
+            msg = f"Your application for {app_response.form.project.title} has been {status}."
+            if status == 'accepted':
+                project.members.add(student)
+                project = Project.objects.get(id=project.id)
+                print(project.members.all())
+            return Response({"message": msg})
+
+        return Response({"message": "Response updated successfully."})
+    
+class UserProjectsView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+
+    def get(self, request):
+        projects = Project.objects.none()
+        user = request.user
+        if user.role == 'professor':
+            projects = Project.objects.filter(created_by=user)
+        elif user.role == 'student':
+            projects = Project.objects.filter(members=user)
+            
+        project_data = [{'title': project.title, 'description': project.description} for project in projects]
+
+        return Response({'projects': project_data})

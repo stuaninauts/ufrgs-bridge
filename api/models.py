@@ -74,7 +74,8 @@ class Project(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(max_length=1000)
     contactEmail = models.EmailField()
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # Link to User model
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    members = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='projects', blank=True)
 
     class Meta:
         verbose_name = "Project"
@@ -97,9 +98,15 @@ class ApplicationForm(models.Model):
         return default_questions + additional_questions
     
 class ApplicationResponse(models.Model):
+    STATUS_CHOICES = (
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('rejected', 'Rejected'),
+    )
     form = models.ForeignKey(ApplicationForm, on_delete=models.CASCADE)
     student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     answers = models.TextField()
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
 
     def __str__(self):
         return f"Response by {self.student.full_name} for {self.form.project.title}"

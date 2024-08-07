@@ -24,6 +24,12 @@ const HomePage = () => {
     const [formQuestions, setFormQuestions] = useState([]);
     const [answers, setAnswers] = useState('');
 
+    const [applications, setApplications] = useState([]);
+    const [selectedResponse, setSelectedResponse] = useState(null);
+    const [responseMessage, setResponseMessage] = useState('');
+
+    const [homeProjects, setHomeProjects] = useState([]);
+
     const handleSubmit = async (e) => {
         
         e.preventDefault();
@@ -41,7 +47,6 @@ const HomePage = () => {
             setMessage('Criou o projeto!');
             fetchProjects(role);
             setError('');
-            fetchProjects();
         } catch (error) {
             console.log('Error caught:');
             console.log(error);  // Log the error for debugging
@@ -71,6 +76,8 @@ const HomePage = () => {
             setFormError('Please select a project.');
             return;
         }
+
+
 
         try {
             const response = await axios.post('/api/create_form/', 
@@ -151,9 +158,69 @@ const HomePage = () => {
         fetchFormDetails(project.id);
     };
 
+    const handleFetchApplications = () => {
+        if (selectedProject) {
+            fetchApplications(selectedProject.id);
+        } else {""
+            setError('Please select a project.');
+        }
+    };
+    
+    const fetchApplications = async (projectId) => {
+        try {
+            const response = await axios.get(`/api/responses/${projectId}`, {
+                headers: { 'Authorization': `Token ${token}` }
+            });
+            setApplications(response.data);
+
+        } catch (error) {
+            console.error('Failed to fetch applications:', error);
+            setError('Failed to fetch applications.');
+        }
+    };
+
+    const handleResponseAction = async (applicationId, action) => {
+        try {
+            await axios.post(`/api/response_action/${applicationId}/`, 
+                { action, applicationId },  
+                { headers: { 'Authorization': `Token ${token}`, 'Content-Type': 'application/json' } }
+            );
+            setResponseMessage(`Application ${action} successfully.`);
+            fetchApplications(selectedProject.id);  
+        } catch (error) {
+            setResponseMessage(`Failed to ${action} application.`);
+        }
+    };
+
+    useEffect(() => {
+        const fetchHomeProjects = async () => {
+            try {
+                const response = await axios.get('/api/user/projects/', {
+                    headers: { 'Authorization': `Token ${token}` }
+                });
+                setHomeProjects(response.data.projects);
+            } catch (error) {
+                setError(error);
+            }
+        };
+
+        fetchHomeProjects();
+    }, []);
+
+
     return (
         <div>
-            <h1>Bem vindo ao UFRGS Bridge, {fullName}!</h1>
+            <h1>Bem vindo ao UFRGS Bridge!</h1>
+            {homeProjects.length != 0 ? (
+                <ul>
+                    {homeProjects.map((project, index) => (
+                        <li key={index}>
+                            <p>Você é do projeto: {project.title}</p></li>
+                    ))}
+                </ul>
+            ) : (
+                <p>Você não está em nenhum projeto.</p>
+            )}
             <br></br>
 
             {role === 'professor' && (
@@ -194,6 +261,29 @@ const HomePage = () => {
                     </form>
                     {formMessage && <p>{formMessage}</p>}
                     {formError && <p>{formError}</p>}
+                    <br/>
+                    <h1>Manage Applications</h1>
+                    <button onClick={handleFetchApplications}>Fetch Applications</button>
+                    {selectedProject && (
+                        <>
+                            <h2>Applications for {selectedProject.title}</h2>
+                            <ul>
+                                {applications.map(app => (
+                                    <li key={app.id}>
+                                        <p> id: {app.id}</p>
+                                        <p>Student: {app.student}</p>
+                                        <p>Answers: {app.answers}</p>
+                                        <p>Status: {app.status}</p>
+                                        <button onClick={() => handleResponseAction(app.id, 'accepted')}>Accept</button>
+                                        <button onClick={() => handleResponseAction(app.id, 'rejected')}>Reject</button>
+                                    </li>
+                                ))}
+                            </ul>
+                            {responseMessage && <p>{responseMessage}</p>}
+                            {error && <p>{error}</p>}
+                        </>
+                    )}
+
                 </>
             )}
 
