@@ -44,7 +44,7 @@ const HomePage = () => {
                 }
             );
             console.log(response);
-            setMessage('Criou o projeto!');
+            setMessage('Projeto Criado!');
             fetchProjects(role);
             setError('');
         } catch (error) {
@@ -70,10 +70,11 @@ const HomePage = () => {
         }
     };
 
+    // criar formulario de inscricao
     const handleFormSubmit = async (e) => {
         e.preventDefault();
         if (!selectedProject) {
-            setFormError('Please select a project.');
+            setFormError('Selecione um projeto.');
             return;
         }
 
@@ -130,7 +131,7 @@ const HomePage = () => {
     const handleApply = async (e) => {
         e.preventDefault();
         if (!selectedProject) {
-            setError('Please select a project.');
+            setError('2.');
             return;
         }
 
@@ -162,7 +163,8 @@ const HomePage = () => {
         if (selectedProject) {
             fetchApplications(selectedProject.id);
         } else {""
-            setError('Please select a project.');
+            // TODO: ta ficando no lugar errado isso
+            setError('Selecione um projeto. (buscar inscricoes)');
         }
     };
     
@@ -207,125 +209,202 @@ const HomePage = () => {
         fetchHomeProjects();
     }, []);
 
-
-    return (
-        <div>
-            <h1>Bem vindo ao UFRGS Bridge!</h1>
-            {homeProjects.length != 0 ? (
-                <ul>
-                    {homeProjects.map((project, index) => (
-                        <li key={index}>
-                            <p>Você é do projeto: {project.title}</p></li>
-                    ))}
-                </ul>
+        return (
+    <div className="bg-gray-900 min-h-screen text-white">
+        <nav className="flex items-center justify-center bg-gray-800 p-4 shadow">
+            <img src="static/icons/bridge.png" alt="Logo" className="h-12 w-12 rounded-full mr-4" />
+            <h1 className="text-2xl font-bold text-white">UFRGS Bridge</h1>
+        </nav>
+        
+        <div className="p-6">
+            {homeProjects.length !== 0 ? (
+                <p className="text-xl p-4 shadow rounded-lg bg-gray-800">
+                    Você participa do(s) projeto(s):  
+                    <span className="font-semibold px-2">
+                        {homeProjects.map((project, index) => (
+                            <span key={index}>
+                                {project.title}
+                                {index < homeProjects.length - 1 && ', '}
+                            </span>
+                        ))}
+                    </span>
+                </p>
             ) : (
-                <p>Você não está em nenhum projeto.</p>
+                <p className="text-xl text-gray-400">Você não está em nenhum projeto.</p>
             )}
-            <br></br>
+            
+            <br />
 
             {role === 'professor' && (
                 <>
-                    <b><h1>Create a Project</h1></b>
-                    <form onSubmit={handleSubmit}>
-                        <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Titulo" required />
-                        <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Descricao" required />
-                        <input type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} placeholder="Contato" required />
-                        
-                        <button type="submit">Create Project</button>
-                    </form>
-                    {message && <p>{message}</p>}
-                    {error && <p>{error}</p>}
-                    <br/>
-                    <b><h1>My Projects</h1></b>
-                    <ul>
+                    <h2 className="text-2xl font-bold mb-4">Meus Projetos de Extensão</h2>
+                    <ul className="space-y-4">
                         {projects.map(project => (
-                            <li key={project.id}>
-                                <h2>{project.title}</h2>
-                                <p>{project.description}</p>
-                                <p>Contact: {project.contactEmail}</p>
-                                <br />
+                            <li key={project.id} className="bg-gray-800 p-4 shadow rounded-lg">
+                                <h3 className="text-xl font-semibold">{project.title}</h3>
+                                <p className="text-gray-400">{project.description}</p>
+                                <p className="text-gray-400">Contato: {project.contactEmail}</p>
                             </li>
                         ))}
                     </ul>
-                    <br/>
-                    <b><h1>Create an Application Form</h1></b>
-                    <form onSubmit={handleFormSubmit}>
-                        <select onChange={(e) => setSelectedProject(projects.find(p => p.id === parseInt(e.target.value)))}>
-                            <option value="">Select Project</option>
+                    <br />
+
+                    <h2 className="text-2xl font-bold mb-4">Criar um Projeto de Extensão</h2>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <input 
+                            type="text" 
+                            value={title} 
+                            onChange={(e) => setTitle(e.target.value)} 
+                            placeholder="Título" 
+                            required 
+                            className="w-full p-2 border border-gray-700 rounded-lg bg-gray-800 text-white"
+                        />
+                        <textarea 
+                            value={description} 
+                            onChange={(e) => setDescription(e.target.value)} 
+                            placeholder="Descrição" 
+                            required 
+                            className="w-full p-2 border border-gray-700 rounded-lg bg-gray-800 text-white"
+                        />
+                        <input 
+                            type="email" 
+                            value={contactEmail} 
+                            onChange={(e) => setContactEmail(e.target.value)} 
+                            placeholder="Contato" 
+                            required 
+                            className="w-full p-2 border border-gray-700 rounded-lg bg-gray-800 text-white"
+                        />
+                        <button 
+                            type="submit" 
+                            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-900"
+                        >
+                            Criar Projeto
+                        </button>
+                    </form>
+                    {message && <p className="text-green-500 mt-4">{message}</p>}
+                    {error && <p className="text-red-500 mt-4">{error}</p>}
+                    <br />
+
+                    <h2 className="text-2xl font-bold mb-4">Criar Formulário de Inscrição para um Projeto</h2>
+                    <form onSubmit={handleFormSubmit} className="space-y-4">
+                        <select 
+                            onChange={(e) => setSelectedProject(projects.find(p => p.id === parseInt(e.target.value)))} 
+                            className="w-full p-2 border border-gray-700 rounded-lg bg-gray-800 text-white"
+                        >
+                            <option value="">Selecionar Projeto</option>
                             {projects.map(project => (
                                 <option key={project.id} value={project.id}>{project.title}</option>
                             ))}
                         </select>
-                        <textarea value={additionalQuestions} onChange={(e) => setAdditionalQuestions(e.target.value)} placeholder="Comma-separated additional questions" />
-                        <button type="submit">Create Form</button>
+                        <textarea 
+                            value={additionalQuestions} 
+                            onChange={(e) => setAdditionalQuestions(e.target.value)} 
+                            placeholder="Perguntas adicionais, separadas por vírgula" 
+                            className="w-full p-2 border border-gray-700 rounded-lg bg-gray-800 text-white"
+                        />
+                        <button 
+                            type="submit" 
+                            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-900"
+                        >
+                            Criar Formulário
+                        </button>
                     </form>
-                    {formMessage && <p>{formMessage}</p>}
-                    {formError && <p>{formError}</p>}
-                    <br/>
-                    <h1>Manage Applications</h1>
-                    <button onClick={handleFetchApplications}>Fetch Applications</button>
+                    {formMessage && <p className="text-green-500 mt-4">{formMessage}</p>}
+                    {formError && <p className="text-red-500 mt-4">{formError}</p>}
+                    <br />
+
+                    <h2 className="text-2xl font-bold mb-4">Gerenciar Inscrições de Alunos para os Projetos de Extensão</h2>
+                    <button 
+                        onClick={handleFetchApplications} 
+                        className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-900"
+                    >
+                        Buscar Inscrições
+                    </button>
                     {selectedProject && (
                         <>
-                            <h2>Applications for {selectedProject.title}</h2>
-                            <ul>
+                            <h3 className="text-xl font-semibold mt-6">Inscrições para o Projeto {selectedProject.title}</h3>
+                            <ul className="space-y-4">
                                 {applications.map(app => (
-                                    <li key={app.id}>
-                                        <p> id: {app.id}</p>
-                                        <p>Student: {app.student}</p>
-                                        <p>Answers: {app.answers}</p>
-                                        <p>Status: {app.status}</p>
-                                        <button onClick={() => handleResponseAction(app.id, 'accepted')}>Accept</button>
-                                        <button onClick={() => handleResponseAction(app.id, 'rejected')}>Reject</button>
+                                    <li key={app.id} className="bg-gray-800 p-4 shadow rounded-lg">
+                                        <p className="text-gray-400">ID: {app.id}</p>
+                                        <p className="text-gray-400">Estudante: {app.student}</p>
+                                        <p className="text-gray-400">Respostas: {app.answers}</p>
+                                        <p className="text-gray-400">Status: {app.status}</p>
+                                        <div className="flex space-x-4 mt-2">
+                                            <button 
+                                                onClick={() => handleResponseAction(app.id, 'accepted')} 
+                                                className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+                                            >
+                                                Aceitar
+                                            </button>
+                                            <button 
+                                                onClick={() => handleResponseAction(app.id, 'rejected')} 
+                                                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-900"
+                                            >
+                                                Rejeitar
+                                            </button>
+                                        </div>
                                     </li>
                                 ))}
                             </ul>
-                            {responseMessage && <p>{responseMessage}</p>}
-                            {error && <p>{error}</p>}
+                            {responseMessage && <p className="text-green-500 mt-4">{responseMessage}</p>}
+                            {error && <p className="text-red-500 mt-4">{error}</p>}
                         </>
                     )}
-
                 </>
             )}
 
             {role === 'student' && (
                 <>
-                    <h1>All Projects</h1>
-            <ul>
-                {projects.map(project => (
-                    <li key={project.id}>
-                        <h2>{project.title}</h2>
-                        <p>{project.description}</p>
-                        <p>Contact: {project.contactEmail}</p>
-                        <button onClick={() => handleProjectSelect(project)}>Apply to this project</button>
-                        <br />
-                    </li>
-                ))}
-            </ul>
-
-            {selectedProject && (
-                <>
-                    <h2>Application Form for {selectedProject.title}</h2>
-                    <form onSubmit={handleApply}>
-                        {formQuestions.map((question, index) => (
-                            <div key={index}>
-                                <label>{question}</label>
-                                <input
-                                    type="text"
-                                    onChange={(e) => setAnswers(prev => ({ ...prev, [index]: e.target.value }))}
-                                    placeholder={`Answer for question ${index + 1}`}
-                                    required
-                                />
-                            </div>
+                    <h2 className="text-2xl font-bold mb-4">Todos Projetos</h2>
+                    <ul className="space-y-4">
+                        {projects.map(project => (
+                            <li key={project.id} className="bg-gray-800 p-4 shadow rounded-lg">
+                                <h3 className="text-xl font-semibold">{project.title}</h3>
+                                <p className="text-gray-400">{project.description}</p>
+                                <p className="text-gray-400">Contato: {project.contactEmail}</p>
+                                <button 
+                                    onClick={() => handleProjectSelect(project)} 
+                                    className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-900 mt-2"
+                                >
+                                    Se inscrever neste projeto
+                                </button>
+                            </li>
                         ))}
-                        <button type="submit">Submit Application</button>
-                    </form>
-                    {message && <p>{message}</p>}
-                    {error && <p>{error}</p>}
-                </>
-            )}
+                    </ul>
+
+                    {selectedProject && (
+                        <>
+                            <h3 className="text-xl font-semibold mt-6">Formulário de Inscrição para o Projeto {selectedProject.title}</h3>
+                            <form onSubmit={handleApply} className="space-y-4">
+                                {formQuestions.map((question, index) => (
+                                    <div key={index}>
+                                        <label className="block text-gray-400">{question}</label>
+                                        <input
+                                            type="text"
+                                            onChange={(e) => setAnswers(prev => ({ ...prev, [index]: e.target.value }))}
+                                            placeholder={`Responda à questão ${index + 1}`}
+                                            required
+                                            className="w-full p-2 border border-gray-700 rounded-lg bg-gray-800 text-white"
+                                        />
+                                    </div>
+                                ))}
+                                <button 
+                                    type="submit" 
+                                    className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-900"
+                                >
+                                    Submeter Inscrição
+                                </button>
+                            </form>
+                            {message && <p className="text-green-500 mt-4">{message}</p>}
+                            {error && <p className="text-red-500 mt-4">{error}</p>}
+                        </>
+                    )}
                 </>
             )}
         </div>
+    </div>
+
     );
 };
 

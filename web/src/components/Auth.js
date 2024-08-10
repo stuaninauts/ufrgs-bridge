@@ -40,7 +40,7 @@ const Auth = () => {
     return (
         <div className="flex items-center justify-center min-h-screen w-full bg-gray-900 p-4">
             <div className="w-full max-w-md p-8 bg-gray-800 border border-gray-700 rounded-lg shadow-md">
-                <img src="static/icons/file.jpeg" alt="Logo" className="mx-auto h-12 w-12 rounded-full" />
+                <img src="static/icons/bridge.png" alt="Logo" className="mx-auto h-12 w-12 rounded-full" />
                 <h2 className="my-6 text-center text-3xl font-extrabold text-white">
                     {isRegister ? 'CADASTRO' : 'LOGIN'}
                 </h2>
@@ -147,7 +147,7 @@ const Auth = () => {
 
                     <button 
                         type="submit" 
-                        className="w-full text-white bg-blue-700 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
+                        className="w-full text-white bg-red-600 hover:bg-red-900 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5"
                     >
                         {isRegister ? 'Cadastrar' : 'Login'}
                     </button>
@@ -161,7 +161,7 @@ const Auth = () => {
                     {!isRegister ? 'Ainda não tem uma conta? ' : ''}
                     <a 
                         onClick={() => setIsRegister(!isRegister)}
-                        className="text-blue-700 hover:underline dark:text-blue-500 cursor-pointer"
+                        className="text-red-700 hover:underline dark:text-red-900 cursor-pointer"
                         style={{ cursor: 'pointer' }}
                     >
                         {!isRegister ? 'Criar Conta' : 'Voltar para Login'}
