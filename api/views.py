@@ -28,14 +28,14 @@ class RegisterView(APIView):
             user = serializer.save()
             activation_link = f"http://127.0.0.1:8000/api/activate/{user.activation_token}/"
             send_mail(
-                'Activate Your Account',
-                f'Please click the following link to activate your account: {activation_link}',
+                'Ative sua conta UFRGS-Bridge',
+                f'Olá, sua conta está quase pronta, clique no link para ativá-la: {activation_link}',
                 "oficialufrgs@outlook.com",
                 [user.email],
                 fail_silently=False,
             )
             token = Token.objects.create(user=user)
-            return Response({"message": "Registration successful. Please check your email to activate your account.",
+            return Response({"message": "Registro feito com sucesso. Cheque seu email para ativar sua conta.",
                              "token": token.key, "user": serializer.data}, 
                             status=status.HTTP_201_CREATED,)
         else:
@@ -73,7 +73,7 @@ class ActivateView(APIView):
         user.is_active = True
         user.activation_token = None  # Clear the activation token after activation
         user.save()
-        return Response({"message": "Account activated successfully."}, status=status.HTTP_200_OK)
+        return render(request, 'frontend/account_activated.html')
 
 class ProjectCreateView(APIView):
     authentication_classes = [TokenAuthentication]
