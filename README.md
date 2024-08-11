@@ -35,7 +35,9 @@ npm run dev
 
 folders explanation
 
-## Roadmap Casos de Uso
+###### ###### ###### #####
+## Roadmap Casos de Uso ##
+###### ###### ###### #####
 
 ### Prioridade Alta
 
@@ -64,7 +66,19 @@ folders explanation
     - [X] Backend
     - [ ] Frontend (stuani & afonso)
 
-### Prioridade Média
+### Prioridade Média-Alta
+
+- UC13 Acessar Perfil
+    - [ ] Backend
+    - [ ] Frontend
+- UC15 Pesquisar Projetos de Extensão
+    - [ ] Backend
+    - [ ] Frontend
+- UC18 Editar Informações do Projeto de Extensão
+    - [ ] Backend
+    - [ ] Frontend
+
+### Prioridade Média-Baixa
 
 - UC10 Adicionar Atividade do Projeto de Extensão
     - [ ] Backend
@@ -75,19 +89,10 @@ folders explanation
 - UC12 Avaliar Proposta de Atividade Realizada
     - [ ] Backend
     - [ ] Frontend
-- UC13 Acessar Perfil
-    - [ ] Backend
-    - [ ] Frontend
-- UC15 Pesquisar Projetos de Extensão
-    - [ ] Backend
-    - [ ] Frontend
 - UC16 Trocar Disponibilidade para Inscrição no Projeto de Extensão
     - [ ] Backend
     - [ ] Frontend
 - UC17 Trocar Disponibilidade de Realização de Atividades no Projeto
-    - [ ] Backend
-    - [ ] Frontend
-- UC18 Editar Informações do Projeto de Extensão
     - [ ] Backend
     - [ ] Frontend
 
