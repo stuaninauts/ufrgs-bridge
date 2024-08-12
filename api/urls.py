@@ -4,6 +4,7 @@ from .views import ProjectCreateView, ProjectAllListView, ProjectMyListView, Pro
 from .views import ApplicationFormCreateView, ApplicationResponseListView
 from .views import ApplicationFormDetailView, ApplyToProjectView
 from .views import ApplicationResponseDetailView, UserProjectsView, UserProfileView
+from .views import EditProjectView
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
@@ -20,4 +21,5 @@ urlpatterns = [
     path('response_action/<int:pk>/', ApplicationResponseDetailView.as_view(), name='response_action'),
     path('user/projects/', UserProjectsView.as_view(), name='user-projects'),
     path('user/profile/', UserProfileView.as_view(), name='user-profile'),
+    path('edit_project/<int:pk>/', EditProjectView.as_view(), name='edit_project'),
 ]

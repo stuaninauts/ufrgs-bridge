@@ -224,7 +224,6 @@ class ApplicationResponseDetailView(APIView):
         status = app_response.status
 
         student = get_object_or_404(User, id=app_response.student.id)
-        print(student)
         project = get_object_or_404(Project, id=app_response.form.project.id)
 
         response_data = {
@@ -276,3 +275,25 @@ class UserProfileView(APIView):
             'role': getattr(user, 'role', None),
         }
         return Response(user_data)
+    
+class EditProjectView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, project_id):
+        project = get_object_or_404(Project, id=project_id)
+        if project.created_by != request.user:
+            return Response({"error": "You are not authorized to edit this project."}, status=status.HTTP_403_FORBIDDEN)
+
+        data = {
+            'title': request.data.get('title'),
+            'description': request.data.get('description'),
+            'contactEmail': request.data.get('contactEmail'),
+        }
+
+        serializer = ProjectSerializer(project, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Project updated successfully."}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

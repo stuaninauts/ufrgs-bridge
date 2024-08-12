@@ -32,7 +32,9 @@ const HomePage = () => {
 
     const [homeProjects, setHomeProjects] = useState([]);
 
-    const [activeTab, setActiveTab] = useState('meus-projetos');
+    const [newTitle, setNewTitle] = useState('');
+    const [newDescription, setNewDescription] = useState('');
+    const [newContactEmail, setNewContactEmail] = useState('');
 
     const handleSubmit = async (e) => {
         
@@ -47,7 +49,6 @@ const HomePage = () => {
                     }
                 }
             );
-            console.log(response);
             setMessage('Projeto Criado!');
             fetchProjects(role);
             setError('');
@@ -78,7 +79,7 @@ const HomePage = () => {
     const handleFormSubmit = async (e) => {
         e.preventDefault();
         if (!selectedProject) {
-            setFormError('Selecione um projeto para criar o formulário.');
+            setFormError('Selecione um projeto.');
             return;
         }
 
@@ -113,6 +114,20 @@ const HomePage = () => {
         } catch (error) {
             console.error(error);
             setError('Failed to fetch projects.');
+        }
+    };
+
+    const editProject = async (projectId) => {
+        try {
+            await axios.post(`/api/edit_project/${projectId}/`, 
+                { newTitle, newDescription, newContactEmail, projectId },  
+                { headers: { 'Authorization': `Token ${token}`, 'Content-Type': 'application/json' } }
+            );
+            setResponseMessage('Projeto editado com sucesso');
+
+        } catch (error) {
+            console.error('Falhou editar o projeto:', error);
+            setError('Falhou editar o projeto');
         }
     };
 
@@ -198,10 +213,6 @@ const HomePage = () => {
         }
     };
 
-    const handleTabClick = (tab) => {
-        setActiveTab(tab);
-    };
-
     useEffect(() => {
         const fetchHomeProjects = async () => {
             try {
@@ -227,7 +238,6 @@ const HomePage = () => {
             <h1 className="text-2xl font-bold text-white">UFRGS Bridge</h1>
         </nav>
     );
-
     
     const ParticipacaoProjetos = ({ homeProjects }) => (
         <>
@@ -244,7 +254,7 @@ const HomePage = () => {
                 </span>
             </p>
         ) : (
-            <p className="text-xl text-gray-400 mb-4">Você não está em nenhum projeto.</p>
+            <p className="text-xl text-gray-400">Você não está em nenhum projeto.</p>
         )}
         </>
     );
@@ -293,7 +303,7 @@ const HomePage = () => {
             />
             <button 
                 type="submit" 
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-900"
+                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-900"
             >
                 Criar Projeto
             </button>
@@ -305,34 +315,32 @@ const HomePage = () => {
 
     const ProfessorCriarFormularioInscricao = () => (
         <>
-        <div className="max-w-md mx-auto bg-gray-800 p-6 rounded-lg shadow-md">
-            <h2 className="text-2xl font-bold mb-4 text-white">Criar Formulário de Inscrição para um Projeto</h2>
-            <form onSubmit={handleFormSubmit} className="space-y-4 mb-4">
-                <select 
-                    onChange={(e) => setSelectedProject(projects.find(p => p.id === parseInt(e.target.value)))} 
-                    className="w-full p-2 border border-gray-700 rounded-lg bg-gray-800 text-white"
-                >
-                    <option value="">Selecionar Projeto</option>
-                    {projects.map(project => (
-                        <option key={project.id} value={project.id}>{project.title}</option>
-                    ))}
-                </select>
-                <textarea 
-                    value={additionalQuestions} 
-                    onChange={(e) => setAdditionalQuestions(e.target.value)} 
-                    placeholder="Perguntas adicionais, separadas por vírgula" 
-                    className="w-full p-2 border border-gray-700 rounded-lg bg-gray-800 text-white"
-                />
-                <button 
-                    type="submit" 
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-900 w-full"
-                >
-                    Criar Formulário
-                </button>
-            </form>
-            {formMessage && <p className="text-green-500 mt-4">{formMessage}</p>}
-            {formError && <p className="text-red-500 mt-4">{formError}</p>}
-        </div>
+        <h2 className="text-2xl font-bold mb-4">Criar Formulário de Inscrição para um Projeto</h2>
+        <form onSubmit={handleFormSubmit} className="space-y-4 mb-4">
+            <select 
+                onChange={(e) => setSelectedProject(projects.find(p => p.id === parseInt(e.target.value)))} 
+                className="w-full p-2 border border-gray-700 rounded-lg bg-gray-800 text-white"
+            >
+                <option value="">Selecionar Projeto</option>
+                {projects.map(project => (
+                    <option key={project.id} value={project.id}>{project.title}</option>
+                ))}
+            </select>
+            <textarea 
+                value={additionalQuestions} 
+                onChange={(e) => setAdditionalQuestions(e.target.value)} 
+                placeholder="Perguntas adicionais, separadas por vírgula" 
+                className="w-full p-2 border border-gray-700 rounded-lg bg-gray-800 text-white"
+            />
+            <button 
+                type="submit" 
+                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-900"
+            >
+                Criar Formulário
+            </button>
+        </form>
+        {formMessage && <p className="text-green-500 mt-4">{formMessage}</p>}
+        {formError && <p className="text-red-500 mt-4">{formError}</p>}
         </>
     );
     
@@ -354,7 +362,7 @@ const HomePage = () => {
         
         <button 
             onClick={handleFetchApplications} 
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-900"
+            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-900"
         >
             Buscar Inscrições
         </button>
@@ -377,7 +385,7 @@ const HomePage = () => {
                                 </button>
                                 <button 
                                     onClick={() => handleResponseAction(app.id, 'rejected')} 
-                                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-900"
+                                    className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-900"
                                 >
                                     Rejeitar
                                 </button>
@@ -403,7 +411,7 @@ const HomePage = () => {
                     <p className="text-gray-400">Contato: {project.contactEmail}</p>
                     <button 
                         onClick={() => handleProjectSelect(project)} 
-                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-900 mt-2"
+                        className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-900 mt-2"
                     >
                         Se inscrever neste projeto
                     </button>
@@ -433,7 +441,7 @@ const HomePage = () => {
                     ))}
                     <button 
                         type="submit" 
-                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-900"
+                        className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-900"
                     >
                         Submeter Inscrição
                     </button>
@@ -450,7 +458,6 @@ const HomePage = () => {
     
     const VerPerfil = () => {
 
-
         const handleClick = () => {
             navigate('/perfil', { state: {token: token}});
         };
@@ -462,6 +469,47 @@ const HomePage = () => {
         );
     };
 
+    const ProfessorEditarProjeto = () => {
+        return (
+            <>
+            <h2 className="text-2xl font-bold mb-4">Editar Projeto</h2>
+            <form onSubmit={editProject} className="space-y-4 mb-4">
+                <input 
+                    type="text" 
+                    value={title} 
+                    onChange={(e) => setNewTitle(e.target.value)} 
+                    placeholder="Título" 
+                    required 
+                    className="w-full p-2 border border-gray-700 rounded-lg bg-gray-800 text-white"
+                />
+                <textarea 
+                    value={description} 
+                    onChange={(e) => setNewDescription(e.target.value)} 
+                    placeholder="Descrição" 
+                    required 
+                    className="w-full p-2 border border-gray-700 rounded-lg bg-gray-800 text-white"
+                />
+                <input 
+                    type="email" 
+                    value={contactEmail} 
+                    onChange={(e) => setNewContactEmail(e.target.value)} 
+                    placeholder="Contato" 
+                    required 
+                    className="w-full p-2 border border-gray-700 rounded-lg bg-gray-800 text-white"
+                />
+                <button 
+                    type="submit" 
+                    className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-900"
+                >
+                    Editar Projeto
+                </button>
+            </form>
+            {message && <p className="text-green-500 mt-4">{message}</p>}
+            {error && <p className="text-red-500 mt-4">{error}</p>}
+            </>
+        );
+    }
+
     // =======================================================
     // HOME PAGE UI
     // =======================================================
@@ -470,57 +518,24 @@ const HomePage = () => {
         
         <div className="bg-gray-900 min-h-screen text-white">
             <Navbar />
-            {/* <Sidebar /> */}
 
             <VerPerfil/>
 
             <div className="p-6">
 
+                <ParticipacaoProjetos homeProjects={homeProjects}/>
 
                 {role === 'professor' && (
                     <>
+                        <ProfessorMeusProjetos projects={projects}/>
 
-                        <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
-                            <ul className="flex flex-wrap -mb-px">
-                                <li className="me-2">
-                                    <a
-                                        href=""
-                                        onClick={() => handleTabClick('meus-projetos')}
-                                        className={`inline-block p-4 border-b-2 rounded-t-lg ${activeTab === 'meus-projetos' ? 'text-blue-600 border-blue-600 dark:text-blue-500 dark:border-blue-500' : 'border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300'}`}
-                                    >
-                                        Lista de Projetos
-                                    </a>
-                                </li>
-                                <li className="me-2">
-                                    <a
-                                        href=""
-                                        onClick={() => handleTabClick('gerenciar-projetos')}
-                                        className={`inline-block p-4 border-b-2 rounded-t-lg ${activeTab === 'gerenciar-projetos' ? 'text-blue-600 border-blue-600 dark:text-blue-500 dark:border-blue-500' : 'border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300'}`}
-                                    >
-                                        Gerenciar Projetos
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
+                        <ProfessorCriarProjetoExtensao />
 
-                        {activeTab === 'meus-projetos' && (
-                            <>
-                            <ParticipacaoProjetos homeProjects={homeProjects}/>
-                            <ProfessorMeusProjetos projects={projects} />
-                            </>
-                        )}
+                        <ProfessorCriarFormularioInscricao />
 
-                        {/* {activeTab === 'gerenciar-projetos' && ( */}
-                            {/* <> */}
-                            <ProfessorCriarProjetoExtensao />
-                            <ProfessorCriarFormularioInscricao />
-                            <ProfessorGerenciarInscricoes />
-                            {/* </> */}
-                        {/* )} */}
+                        <ProfessorGerenciarInscricoes />
 
-
-                        
-
+                        <ProfessorEditarProjeto />
                     </>
                 )}
 
