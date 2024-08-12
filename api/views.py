@@ -111,6 +111,20 @@ class ProjectAllListView(APIView):
         projects = Project.objects.all()
         serializer = ProjectSerializer(projects, many=True)
         return Response(serializer.data)
+
+class ProjectSearchView(APIView):
+    #authentication_classes = [TokenAuthentication]
+    #permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        query = request.query_params.get('q', None)
+        if query:
+            projects = Project.objects.filter(title__icontains=query)
+        else:
+            projects = Project.objects.all()
+
+        serializer = ProjectSerializer(projects, many=True)
+        return Response(serializer.data)
     
 class ApplicationFormCreateView(APIView):
     authentication_classes = [TokenAuthentication]

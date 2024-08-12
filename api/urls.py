@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import RegisterView, LoginView, ActivateView
-from .views import ProjectCreateView, ProjectAllListView, ProjectMyListView
+from .views import ProjectCreateView, ProjectAllListView, ProjectMyListView, ProjectSearchView
 from .views import ApplicationFormCreateView, ApplicationResponseListView
 from .views import ApplicationFormDetailView, ApplyToProjectView
 from .views import ApplicationResponseDetailView, UserProjectsView
@@ -12,6 +12,7 @@ urlpatterns = [
     path('create_project/', ProjectCreateView.as_view(), name='create_project'),
     path('list_projects/', ProjectAllListView.as_view(), name='list_projects'),
     path('list_my_projects/', ProjectMyListView.as_view(), name='list_my_projects'),
+    path('search_projects/', ProjectSearchView.as_view(), name='search_projects'),
     path('create_form/', ApplicationFormCreateView.as_view(), name='create_form'),
     path('form_details/<int:project_id>/', ApplicationFormDetailView.as_view(), name='form_details'),
     path('apply_to_project/', ApplyToProjectView.as_view(), name='apply_to_project'),
