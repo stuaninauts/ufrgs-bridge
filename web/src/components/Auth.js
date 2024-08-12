@@ -147,7 +147,7 @@ const Auth = () => {
 
                     <button 
                         type="submit" 
-                        className="w-full text-white bg-red-600 hover:bg-red-900 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5"
+                        className="w-full text-white bg-blue-600 hover:bg-blue-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
                     >
                         {isRegister ? 'Cadastrar' : 'Login'}
                     </button>
@@ -161,7 +161,7 @@ const Auth = () => {
                     {!isRegister ? 'Ainda não tem uma conta? ' : ''}
                     <a 
                         onClick={() => setIsRegister(!isRegister)}
-                        className="text-red-700 hover:underline dark:text-red-900 cursor-pointer"
+                        className="text-blue-700 hover:underline dark:text-blue-900 cursor-pointer"
                         style={{ cursor: 'pointer' }}
                     >
                         {!isRegister ? 'Criar Conta' : 'Voltar para Login'}

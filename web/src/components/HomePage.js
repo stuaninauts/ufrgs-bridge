@@ -38,6 +38,8 @@ const HomePage = () => {
     const [newDescription, setNewDescription] = useState('');
     const [newContactEmail, setNewContactEmail] = useState('');
 
+    const [activeTab, setActiveTab] = useState('meus-projetos');
+
     const handleSubmit = async (e) => {
         
         e.preventDefault();
@@ -258,7 +260,7 @@ const HomePage = () => {
     const ParticipacaoProjetos = ({ homeProjects }) => (
         <>
         {homeProjects.length !== 0 ? (
-            <p className="text-xl mb-4 p-4 shadow rounded-lg bg-gray-800">
+            <p className="text-xl my-4 p-4 shadow rounded-lg bg-gray-800">
                 Você participa do(s) projeto(s):  
                 <span className="font-semibold px-2">
                     {homeProjects.map((project, index) => (
@@ -319,7 +321,7 @@ const HomePage = () => {
             />
             <button 
                 type="submit" 
-                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-900"
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-900"
             >
                 Criar Projeto
             </button>
@@ -350,7 +352,7 @@ const HomePage = () => {
             />
             <button 
                 type="submit" 
-                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-900"
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-900"
             >
                 Criar Formulário
             </button>
@@ -378,7 +380,7 @@ const HomePage = () => {
         
         <button 
             onClick={handleFetchApplications} 
-            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-900"
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-900"
         >
             Buscar Inscrições
         </button>
@@ -401,7 +403,7 @@ const HomePage = () => {
                                 </button>
                                 <button 
                                     onClick={() => handleResponseAction(app.id, 'rejected')} 
-                                    className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-900"
+                                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-900"
                                 >
                                     Rejeitar
                                 </button>
@@ -427,7 +429,7 @@ const HomePage = () => {
                     <p className="text-gray-400">Contato: {project.contactEmail}</p>
                     <button 
                         onClick={() => handleProjectSelect(project)} 
-                        className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-900 mt-2"
+                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-900 mt-2"
                     >
                         Se inscrever neste projeto
                     </button>
@@ -457,7 +459,7 @@ const HomePage = () => {
                     ))}
                     <button 
                         type="submit" 
-                        className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-900"
+                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-900"
                     >
                         Submeter Inscrição
                     </button>
@@ -469,6 +471,10 @@ const HomePage = () => {
         </>
 
     );
+
+    const handleTabClick = (tab) => {
+        setActiveTab(tab);
+    };
 
     const navigate = useNavigate();
     
@@ -515,7 +521,7 @@ const HomePage = () => {
                 />
                 <button 
                     type="submit" 
-                    className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-900"
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-900"
                 >
                     Editar Projeto
                 </button>
@@ -534,24 +540,56 @@ const HomePage = () => {
         
         <div className="bg-gray-900 min-h-screen text-white">
             <Navbar />
+            {/* <Sidebar /> */}
 
             <VerPerfil/>
 
             <div className="p-6">
 
-                <ParticipacaoProjetos homeProjects={homeProjects}/>
 
                 {role === 'professor' && (
                     <>
-                        <ProfessorMeusProjetos projects={projects}/>
 
-                        <ProfessorCriarProjetoExtensao />
+                        <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
+                            <ul className="flex flex-wrap -mb-px">
+                                <li className="me-2">
+                                    <a
+                                        href=""
+                                        onClick={() => handleTabClick('meus-projetos')}
+                                        className={`inline-block p-4 border-b-2 rounded-t-lg ${activeTab === 'meus-projetos' ? 'text-blue-600 border-blue-600 dark:text-blue-500 dark:border-blue-500' : 'border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300'}`}
+                                    >
+                                        Lista de Projetos
+                                    </a>
+                                </li>
+                                <li className="me-2">
+                                    <a
+                                        href=""
+                                        onClick={() => handleTabClick('gerenciar-projetos')}
+                                        className={`inline-block p-4 border-b-2 rounded-t-lg ${activeTab === 'gerenciar-projetos' ? 'text-blue-600 border-blue-600 dark:text-blue-500 dark:border-blue-500' : 'border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300'}`}
+                                    >
+                                        Gerenciar Projetos
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
 
-                        <ProfessorCriarFormularioInscricao />
+                        {activeTab === 'meus-projetos' && (
+                            <>
+                            <ParticipacaoProjetos homeProjects={homeProjects}/>
+                            <ProfessorMeusProjetos projects={projects} />
+                            <ProfessorCriarProjetoExtensao />
 
-                        <ProfessorGerenciarInscricoes />
+                            </>
+                        )}
 
-                        <ProfessorEditarProjeto />
+                        {activeTab === 'gerenciar-projetos' && (
+                            <>
+                            <ProfessorCriarFormularioInscricao />
+                            <ProfessorGerenciarInscricoes />
+                            </>
+                        )}
+                        
+
                     </>
                 )}
 

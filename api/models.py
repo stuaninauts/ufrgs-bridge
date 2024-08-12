@@ -5,18 +5,18 @@ from django.conf import settings
 
 def validate_ufrgs_email(value):
     if not value.endswith('@ufrgs.br'):
-        raise ValidationError('Email must end with @ufrgs.br')
+        raise ValidationError('Email precisa acabar com @ufrgs.br')
 
 class UserManager(BaseUserManager):
     def create_user(self, email, unique_code, full_name, password=None, role=None):
         if not email:
-            raise ValueError('The Email field must be set')
+            raise ValueError('O campo de Email precisa ser preenchido')
         if not unique_code:
-            raise ValueError('The Unique Code field must be set')
+            raise ValueError('O campo de Matrícula precisa ser preenchido')
         if not full_name:
-            raise ValueError('The Full Name field must be set')
+            raise ValueError('O campo de Nome Completo precisa ser preenchido')
         if not role:
-            raise ValueError('The Role field must be set')
+            raise ValueError('O campo de Cargo precisa ser preenchido')
 
         email = self.normalize_email(email)
         user = self.model(email=email, unique_code=unique_code, full_name=full_name, role=role)
@@ -86,8 +86,8 @@ class Project(models.Model):
     
 class ApplicationForm(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    questions = models.TextField(default="When did you join the University?, What course are you in?, Why are you interested in this project?")  # Default questions
-    additional_questions = models.TextField(blank=True, null=True, help_text="Additional questions added by the professor")
+    questions = models.TextField(default="Qual é a sua barra de ingresso?, Você possui experiência prévia na área do projeto?, Por que você está interessado nesse projeto?")  # Default questions
+    additional_questions = models.TextField(blank=True, null=True, help_text="Questões complementares adicionadas pelo professor:")
 
     def __str__(self):
         return f"Form for {self.project.title}"
