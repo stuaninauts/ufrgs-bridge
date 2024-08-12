@@ -262,3 +262,17 @@ class UserProjectsView(APIView):
         project_data = [{'title': project.title, 'description': project.description} for project in projects]
 
         return Response({'projects': project_data})
+
+class UserProfileView(APIView):
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        user_data = {
+            'email': getattr(user, 'email', None),
+            'unique_code': getattr(user, 'unique_code', None),
+            'full_name': getattr(user, 'full_name', None),
+            'role': getattr(user, 'role', None),
+        }
+        return Response(user_data)

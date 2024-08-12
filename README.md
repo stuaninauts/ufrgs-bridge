@@ -69,10 +69,10 @@ folders explanation
 ### Prioridade Média-Alta
 
 - UC13 Acessar Perfil
-    - [ ] Backend
+    - [X] Backend
     - [ ] Frontend
 - UC15 Pesquisar Projetos de Extensão
-    - [ ] Backend
+    - [X] Backend
     - [ ] Frontend
 - UC18 Editar Informações do Projeto de Extensão
     - [ ] Backend
