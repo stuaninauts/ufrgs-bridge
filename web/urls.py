@@ -6,4 +6,5 @@ urlpatterns = [
     path('search', index),
     path('home', index),
     path('auth', index),
+    path('perfil', index),
 ]

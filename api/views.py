@@ -264,8 +264,8 @@ class UserProjectsView(APIView):
         return Response({'projects': project_data})
 
 class UserProfileView(APIView):
-    # authentication_classes = [TokenAuthentication]
-    # permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         user = request.user

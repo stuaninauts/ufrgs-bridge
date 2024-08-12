@@ -2,6 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 // import Sidebar from './Sidebar';  
 
@@ -436,13 +437,32 @@ const HomePage = () => {
 
     );
 
+    const navigate = useNavigate();
+    
+    const VerPerfil = () => {
+
+
+        const handleClick = () => {
+            navigate('/perfil', { state: {token: token}});
+        };
+
+        return (
+            <button onClick={handleClick} className="">
+                Perfil
+            </button>
+        );
+    };
+
     // =======================================================
     // HOME PAGE UI
     // =======================================================
 
     return (
+        
         <div className="bg-gray-900 min-h-screen text-white">
             <Navbar />
+
+            <VerPerfil/>
 
             <div className="p-6">
 

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import SearchPage from './SearchPage';
 import HomePage from './HomePage';
+import ProfilePage from './ProfilePage';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Auth from './Auth';
 
@@ -16,7 +17,7 @@ export default class InitialPage extends Component {
           <Route path="/" element={<Auth />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/home" element={<HomePage />} />
-          {/* TODO: <Route path="/perfil" element={<ProfilePage />} /> */}
+          <Route path="/perfil" element={<ProfilePage />} />
         </Routes>
       </Router>
     );
