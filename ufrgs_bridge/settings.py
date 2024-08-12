@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'web.apps.WebConfig',
     'corsheaders',
-    'django_extensions'
 ]
 
 # Email settings

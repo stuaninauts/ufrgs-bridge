@@ -247,8 +247,8 @@ class ApplicationResponseDetailView(APIView):
         return Response({"message": "Response updated successfully."})
     
 class UserProjectsView(APIView):
-    #permission_classes = [IsAuthenticated]
-    #authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
 
     def get(self, request):
         projects = Project.objects.none()
@@ -282,7 +282,8 @@ class EditProjectView(APIView):
 
     def post(self, request, project_id):
 
-        print(request.data)
+        token, created = Token.objects.get_or_create(user=request.user)
+        print(token);
 
         project = get_object_or_404(Project, id=project_id)
         if project.created_by != request.user:
@@ -297,6 +298,6 @@ class EditProjectView(APIView):
         serializer = ProjectSerializer(project, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response({"message": "Project updated successfully."}, status=status.HTTP_200_OK)
+            return Response({"message": "Project updated successfully.", "token": token.key,}, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

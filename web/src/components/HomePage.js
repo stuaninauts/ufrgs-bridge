@@ -10,6 +10,8 @@ const HomePage = () => {
     const location = useLocation();
     const { fullName, token, user, role} = location.state || {}
 
+    localStorage.setItem('Token', token);
+
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [contactEmail, setContactEmail] = useState('');
@@ -82,9 +84,6 @@ const HomePage = () => {
             setFormError('Selecione um projeto.');
             return;
         }
-
-
-
         try {
             const response = await axios.post('/api/create_form/', 
                 { 
@@ -105,10 +104,14 @@ const HomePage = () => {
     
     const fetchProjects = async (role) => {
         const url = role === 'professor' ? '/api/list_my_projects/' : '/api/list_projects/';
-        
+
+        if (!localStorage.getItem('Token')) {
+            setError('Token is missing.');
+            return;
+        }
         try {
             const response = await axios.get(url, {
-                headers: { 'Authorization': `Token ${token}` }
+                headers: { 'Authorization': `Token ${localStorage.getItem('Token')}`, 'Content-Type': 'application/json' }
             });
             setProjects(response.data);
         } catch (error) {
@@ -121,13 +124,17 @@ const HomePage = () => {
 
         console.log({ newTitle, newDescription, newContactEmail});
         const projectId = selectedProject.id;
+        console.log('ANTES DE EDITAR:',token);
 
         try {
-            await axios.post(`/api/edit_project/${projectId}/`, 
+            const response = await axios.post(`/api/edit_project/${projectId}/`, 
                 { newTitle, newDescription, newContactEmail, projectId },  
                 { headers: { 'Authorization': `Token ${token}`, 'Content-Type': 'application/json' } }
             );
-            setResponseMessage('Projeto editado com sucesso');
+            console.log('DPS DE EDITAR:',token);
+            setResponseMessage(response.message);
+            localStorage.setItem('Token', response.data.token);
+            console.log('RESPONSE DA API:', response.data.token);
 
         } catch (error) {
             console.error('Falhou editar o projeto:', error);
@@ -220,9 +227,13 @@ const HomePage = () => {
 
     useEffect(() => {
         const fetchHomeProjects = async () => {
+            if (!localStorage.getItem('Token')) {
+                setError('Token is missing.');
+                return;
+            }
             try {
                 const response = await axios.get('/api/user/projects/', {
-                    headers: { 'Authorization': `Token ${token}` }
+                    headers: { 'Authorization': `Token ${localStorage.getItem('Token')}`, 'Content-Type': 'application/json' }
                 });
                 setHomeProjects(response.data.projects);
             } catch (error) {
