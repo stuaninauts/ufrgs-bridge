@@ -107,7 +107,7 @@ class ProjectMyListView(APIView):
 
 class ProjectAllListView(APIView):
 
-    def get(self, request):
+    def get(self):
         projects = Project.objects.all()
         serializer = ProjectSerializer(projects, many=True)
         return Response(serializer.data)
@@ -247,8 +247,8 @@ class ApplicationResponseDetailView(APIView):
         return Response({"message": "Response updated successfully."})
     
 class UserProjectsView(APIView):
-    permission_classes = [IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
+    #permission_classes = [IsAuthenticated]
+    #authentication_classes = [TokenAuthentication]
 
     def get(self, request):
         projects = Project.objects.none()
@@ -281,14 +281,17 @@ class EditProjectView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, project_id):
+
+        print(request.data)
+
         project = get_object_or_404(Project, id=project_id)
         if project.created_by != request.user:
             return Response({"error": "You are not authorized to edit this project."}, status=status.HTTP_403_FORBIDDEN)
 
         data = {
-            'title': request.data.get('title'),
-            'description': request.data.get('description'),
-            'contactEmail': request.data.get('contactEmail'),
+            'title': request.data.get('newTitle'),
+            'description': request.data.get('newDescription'),
+            'contactEmail': request.data.get('newContactEmail'),
         }
 
         serializer = ProjectSerializer(project, data=data, partial=True)

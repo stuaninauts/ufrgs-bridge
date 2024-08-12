@@ -21,5 +21,5 @@ urlpatterns = [
     path('response_action/<int:pk>/', ApplicationResponseDetailView.as_view(), name='response_action'),
     path('user/projects/', UserProjectsView.as_view(), name='user-projects'),
     path('user/profile/', UserProfileView.as_view(), name='user-profile'),
-    path('edit_project/<int:pk>/', EditProjectView.as_view(), name='edit_project'),
+    path('edit_project/<int:project_id>/', EditProjectView.as_view(), name='edit_project'),
 ]

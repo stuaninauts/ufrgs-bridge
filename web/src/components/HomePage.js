@@ -117,7 +117,11 @@ const HomePage = () => {
         }
     };
 
-    const editProject = async (projectId) => {
+    const editProject = async () => {
+
+        console.log({ newTitle, newDescription, newContactEmail});
+        const projectId = selectedProject.id;
+
         try {
             await axios.post(`/api/edit_project/${projectId}/`, 
                 { newTitle, newDescription, newContactEmail, projectId },  
@@ -176,6 +180,7 @@ const HomePage = () => {
     const handleProjectSelect = (project) => {
         setSelectedProject(project);
         fetchFormDetails(project.id);
+
     };
 
     const handleFetchApplications = () => {
@@ -476,14 +481,14 @@ const HomePage = () => {
             <form onSubmit={editProject} className="space-y-4 mb-4">
                 <input 
                     type="text" 
-                    value={title} 
+                    value={newTitle} 
                     onChange={(e) => setNewTitle(e.target.value)} 
                     placeholder="Título" 
                     required 
                     className="w-full p-2 border border-gray-700 rounded-lg bg-gray-800 text-white"
                 />
                 <textarea 
-                    value={description} 
+                    value={newDescription} 
                     onChange={(e) => setNewDescription(e.target.value)} 
                     placeholder="Descrição" 
                     required 
@@ -491,7 +496,7 @@ const HomePage = () => {
                 />
                 <input 
                     type="email" 
-                    value={contactEmail} 
+                    value={newContactEmail} 
                     onChange={(e) => setNewContactEmail(e.target.value)} 
                     placeholder="Contato" 
                     required 
