@@ -16,6 +16,7 @@ export default class InitialPage extends Component {
           <Route path="/" element={<Auth />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/home" element={<HomePage />} />
+          {/* TODO: <Route path="/perfil" element={<ProfilePage />} /> */}
         </Routes>
       </Router>
     );
