@@ -126,8 +126,9 @@ const HomePage = () => {
                 }
             });
             setProjects(response.data);
+            console.log('aqui funcionou')
         } catch (error) {
-            console.error('Error fetching projects:', error);
+            console.error('Error fetching projectss:', error);
             setError('Failed to fetch projects. Please try again later.');
         }
     };
@@ -236,6 +237,7 @@ const HomePage = () => {
             setResponseMessage(`Failed to ${action} application.`);
         }
     };
+    
 
     useEffect(() => {
         const fetchHomeProjects = async () => {
@@ -260,28 +262,26 @@ const HomePage = () => {
     // UI COMPONENTS
     // =======================================================
 
-    const EstudanteTodosProjetos = ({projects}) => (
+
+    const ProfessorTodosProjetos = () => (
         <>
-        <h2 className="text-2xl font-bold mb-4">Todos Projetos</h2>
+        <h2 className="text-2xl font-bold mb-4">Lista com Todos Projetos</h2>
         <ul className="space-y-4 mb-4">
             {projects.map(project => (
                 <li key={project.id} className="bg-gray-800 p-4 shadow rounded-lg">
                     <h3 className="text-xl font-semibold">{project.title}</h3>
                     <p className="text-gray-400">{project.description}</p>
                     <p className="text-gray-400">Contato: {project.contactEmail}</p>
-                    <button 
-                        onClick={() => handleProjectSelect(project)} 
-                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-900 mt-2"
-                    >
-                        Se inscrever neste projeto
-                    </button>
+                    {/* <p className="text-gray-400">Responsável: {project.created_by.name}</p> */}
                 </li>
             ))}
         </ul>
         </>
     );
+
+
     
-    const EstudanteFormularioInscricao = ({selectedProject, handleApply, formQuestions, message, error}) => (
+    const EstudanteFormularioInscricao = () => (
         <>
         {selectedProject && (
             <>
@@ -335,7 +335,7 @@ const HomePage = () => {
         );
     };
 
-    const ProfessorEditarProjeto = () => {
+    const ProfessorEditarProjeto = ({editProject, newTitle, newDescription, newContactEmail, setNewTitle, setNewDescription, setNewContactEmail, message, error}) => {
         return (
             <>
             <h2 className="text-2xl font-bold mb-4">Editar Projeto</h2>
@@ -420,6 +420,13 @@ const HomePage = () => {
                             <>
                             <ParticipacaoProjetos homeProjects={homeProjects}/>
                             <ProfessorMeusProjetos projects={projects} />
+                            <ProfessorTodosProjetos />
+
+                            </>
+                        )}
+
+                        {activeTab === 'gerenciar-projetos' && (
+                            <>
                             <ProfessorCriarProjetoExtensao 
                                 handleSubmit={handleSubmit} 
                                 title={title} 
@@ -432,13 +439,8 @@ const HomePage = () => {
                                 setContactEmail={setContactEmail} 
                             />
 
-                            </>
-                        )}
-
-                        {activeTab === 'gerenciar-projetos' && (
-                            <>
-                                <div className="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
-                                <h2 className="text-2xl font-bold mb-4">Gerenciar Projetos</h2>
+                            <div className="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+                                <h2 className="text-2xl font-bold mb-4">Gerenciar Projetos Existentes</h2>
                                 <p className="mb-4">Selecione o projeto que deseja gerenciar:</p>
                                 <select 
                                     onChange={(e) => setSelectedProject(projects.find(p => p.id === parseInt(e.target.value)))} 
@@ -449,7 +451,7 @@ const HomePage = () => {
                                         <option key={project.id} value={project.id}>{project.title}</option>
                                     ))}
                                 </select>
-                                </div>
+                            </div>
                             <ProfessorCriarFormularioInscricao 
                                 handleFormSubmit={handleFormSubmit}
                                 setSelectedProject={setSelectedProject}
@@ -465,9 +467,21 @@ const HomePage = () => {
                                 applications={applications}
                                 responseMessage={responseMessage}
                                 error={error}
+                                handleResponseAction={handleResponseAction}
                             />
-                            </>
+                            {/* <ProfessorEditarProjeto
+                            editProject={editProject}
+                            newTitle={newTitle}
+                            newDescription={newDescription}
+                            newContactEmail={newContactEmail}
+                            setNewTitle={setNewTitle}
+                            setNewDescription={setNewDescription}
+                            setNewContactEmail={setNewContactEmail}
+                            message={message}
+                            error={error}
+                            /> */}
 
+                            </>
 
                         )}
                         
@@ -478,17 +492,52 @@ const HomePage = () => {
                     <>
                         <ParticipacaoProjetos homeProjects={homeProjects}/>
 
-                        <EstudanteTodosProjetos 
-                            projects={projects}
-                        />
+                        
+                    <h2 className="text-2xl font-bold mb-4">Todos Projetos</h2>
+                    <ul className="space-y-4">
+                        {projects.map(project => (
+                            <li key={project.id} className="bg-gray-800 p-4 shadow rounded-lg">
+                                <h3 className="text-xl font-semibold">{project.title}</h3>
+                                <p className="text-gray-400">{project.description}</p>
+                                <p className="text-gray-400">Contato: {project.contactEmail}</p>
+                                <button 
+                                    onClick={() => handleProjectSelect(project)} 
+                                    className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-900 mt-2"
+                                >
+                                    Se inscrever neste projeto
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
 
-                        <EstudanteFormularioInscricao 
-                            selectedProject={selectedProject}
-                            handleApply={handleApply}
-                            formQuestions={formQuestions}
-                            message={message}
-                            error={error}
-                        />
+                    {selectedProject && (
+                        <>
+                            <h3 className="text-xl font-semibold mt-6">Formulário de Inscrição para o Projeto {selectedProject.title}</h3>
+                            <form onSubmit={handleApply} className="space-y-4">
+                                {formQuestions.map((question, index) => (
+                                    <div key={index}>
+                                        <label className="block text-gray-400">{question}</label>
+                                        <input
+                                            type="text"
+                                            onChange={(e) => setAnswers(prev => ({ ...prev, [index]: e.target.value }))}
+                                            placeholder={`Responda à questão ${index + 1}`}
+                                            required
+                                            className="w-full p-2 border border-gray-700 rounded-lg bg-gray-800 text-white"
+                                        />
+                                    </div>
+                                ))}
+                                <button 
+                                    type="submit" 
+                                    className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-900"
+                                >
+                                    Submeter Inscrição
+                                </button>
+                            </form>
+                            {message && <p className="text-green-500 mt-4">{message}</p>}
+                            {error && <p className="text-red-500 mt-4">{error}</p>}
+                        </>
+                    )}
+               
                         
                     </>
                 )}
@@ -526,8 +575,29 @@ const ParticipacaoProjetos = ({ homeProjects }) => (
             </span>
         </p>
     ) : (
-        <p className="text-xl text-gray-400">Você não está em nenhum projeto.</p>
+        <p className="text-xl text-gray-400 mb-4">Você não está em nenhum projeto.</p>
     )}
+    </>
+);
+
+const EstudanteTodosProjetos = ({projects}) => (
+    <>
+    <h2 className="text-2xl font-bold mb-4">Lista com Todos Projetos</h2>
+    <ul className="space-y-4 mb-4">
+        {projects.map(project => (
+            <li key={project.id} className="bg-gray-800 p-4 shadow rounded-lg">
+                <h3 className="text-xl font-semibold">{project.title}</h3>
+                <p className="text-gray-400">{project.description}</p>
+                <p className="text-gray-400">Contato: {project.contactEmail}</p>
+                <button 
+                    onClick={() => handleProjectSelect(project)} 
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-900 mt-2"
+                >
+                    Se inscrever neste projeto
+                </button>
+            </li>
+        ))}
+    </ul>
     </>
 );
 
