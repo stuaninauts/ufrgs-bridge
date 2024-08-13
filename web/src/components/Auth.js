@@ -27,9 +27,9 @@ const Auth = () => {
             if (isRegister) {
                 setMessage('Cadastro feito com sucesso! Por favor, acesse seu email para verificar a sua conta.');
             } else {
-                setMessage('Login successful!');
-                navigate('/home', { state: {fullName: response.data.full_name, token: response.data.token, role: response.data.role} });
-
+                setMessage('Login feito com sucesso!');
+                localStorage.setItem('Token', response.data.token); // Store token
+                navigate('/home', { state: { fullName: response.data.full_name, token: response.data.token, role: response.data.role } });
             }
         } catch (error) {
             setError(error.response.data);
