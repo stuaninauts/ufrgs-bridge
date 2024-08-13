@@ -161,6 +161,7 @@ const HomePage = () => {
 
     const fetchFormDetails = async (projectId) => {
         try {
+            console.log('oiiiiii id projeto ', projectId)
             const response = await axios.get(`/api/form_details/${projectId}/`, {
                 headers: { 'Authorization': `Token ${token}` }
             });
@@ -188,7 +189,7 @@ const HomePage = () => {
                 },  
                 { headers: { 'Authorization': `Token ${token}`, 'Content-Type': 'application/json' } }
             );
-            setMessage('Application submitted successfully.');
+            setMessage('Inscrição enviada com sucesso.');
             setError('');
         } catch (error) {
             console.error('Failed to submit application:', error);
@@ -199,19 +200,18 @@ const HomePage = () => {
 
     const handleProjectSelect = (project) => {
         setSelectedProject(project);
-        fetchFormDetails(project.id);
-        fetchApplications(project.id);
+        fetchFormDetails(project.id)
+            .catch(error => {
+                console.error('Failed to fetch form details:', error);
+                setError('Erro ao buscar detalhes do formulário.');
+            });
+        fetchApplications(project.id)
+            .catch(error => {
+                console.error('Failed to fetch applications:', error);
+                setError('Erro ao buscar inscrições.');
+            });
     };
 
-    const handleFetchApplications = () => {
-        if (selectedProject) {
-            fetchApplications(selectedProject.id);
-        } else {""
-            // TODO: ta ficando no lugar errado isso
-            setError('Selecione um projeto para buscar as inscrições.');
-        }
-    };
-    
     const fetchApplications = async (projectId) => {
         try {
             const response = await axios.get(`/api/responses/${projectId}`, {
@@ -221,9 +221,25 @@ const HomePage = () => {
 
         } catch (error) {
             console.error('Failed to fetch applications:', error);
-            setError('Failed to fetch applications.');
+            // setError('Failed to fetch applications.');
         }
     };
+    
+    const handleFetchApplications = async (e) => {
+        e.preventDefault();
+
+        if (selectedProject) {
+            fetchApplications(selectedProject.id)
+                .catch(error => {
+                    console.error('Failed to fetch applications:', error);
+                    setError('Erro ao buscar inscrições.');
+                });
+        } else {
+            setError('Selecione um projeto para buscar as inscrições.');
+        }
+    };
+    
+
 
     const handleResponseAction = async (applicationId, action) => {
         try {
@@ -502,7 +518,7 @@ const HomePage = () => {
                                 <p className="text-gray-400">Contato: {project.contactEmail}</p>
                                 <button 
                                     onClick={() => handleProjectSelect(project)} 
-                                    className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-900 mt-2"
+                                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-900 mt-2"
                                 >
                                     Se inscrever neste projeto
                                 </button>
@@ -528,7 +544,7 @@ const HomePage = () => {
                                 ))}
                                 <button 
                                     type="submit" 
-                                    className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-900"
+                                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-900"
                                 >
                                     Submeter Inscrição
                                 </button>
@@ -673,6 +689,7 @@ const ProfessorCriarFormularioInscricao = ({
                 value={additionalQuestions} 
                 onChange={(e) => setAdditionalQuestions(e.target.value)} 
                 placeholder="Perguntas adicionais, separadas por vírgula" 
+                required
                 className="w-full p-2 border border-gray-700 rounded-lg bg-gray-800 text-white"
             />
             <button 

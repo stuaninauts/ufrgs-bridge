@@ -167,7 +167,7 @@ class ApplicationFormDetailView(APIView):
         project = get_object_or_404(Project, id=project_id)
         form = ApplicationForm.objects.filter(project=project).first()
         if not form:
-            return Response({"error": "No application form found for this project."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "Nenhum formulário de inscrição foi feito neste projeto."}, status=status.HTTP_404_NOT_FOUND)
 
         questions = form.get_full_questions()
         return Response({"questions": questions}, status=status.HTTP_200_OK)
