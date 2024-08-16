@@ -1,106 +1,78 @@
 # UFRGS Bridge
 
-to see users access: http://localhost:8000/admin and login with user: pessoal | password: pessoal
+The UFRGS Bridge is a proposed software system designed to manage, organize, and simplify extension activities and projects at UFRGS. It aims to provide an engaging environment for undergraduate students, professors, and administrative staff. This initiative addresses a need at UFRGS, where 10% of students' graduation hours must be dedicated to extension projects. However, the current system used by the institution is outdated and lacks user-friendliness and accessibility.
+
+This software was created during the Software Engineering () course at UFRGS taught by Prof. Dr. Lucineia Heloisa Thom.
 
 ## Install and run the project
 
-Must have django and npm installed.
+First, you must have Django and NPM already installed, then:
 
-Install dependencies
+Install dependencies if not up to date
 ```bash
 pip install -r requirements.txt
 ```
 
-After editing api files, run makemigrations to make new migrations
-
+After editing any API files, run the command:
 ```bash
 python manage.py makemigrations
 ```
-then do to apply them:
+
+Then, to apply the migrations created, do:
 ```bash
 python manage.py migrate
 ```
-then run the server:
+
+Next, run the server:
 ```bash
 python manage.py runserver
 ```
 
-to start react do (only do npm install if its either: first time running or if dependencies changed)
+Now, for the front-end part, run:
 ```bash
 npm install web
 npm run dev
 ```
 
 ## How is this project organized
+```bash
+api
+|_ models.py
+|_ views.py
+ufrgs-bridge
+|_ settings.py
+web
+ |_ components
+     |_ Auth.js
+     |_ HomePage.js
+     |_ ProfilePage.js
+```
+### `api`
 
-folders explanation
+This folder is the core of the API and controls the logic of the back-end.
 
-###### ###### ###### #####
-## Roadmap Casos de Uso ##
-###### ###### ###### #####
+#### `models.py`
+This file defines the database models and the structure of the data that the application will manage. It acts as the foundation for the data layer in the MVT (Model-View-Template) architecture.
 
-### Prioridade Alta
+#### `views.py`
+This file acts as the View in the MVT Architecture. It is responsible for handling the logic behind each web request, interacting with the models, and formatting the data coming from the database to be rendered by the templates.
 
-- UC1 Logar na Plataforma
-    - [X] Backend
-    - [X] Frontend
-- UC2 Cadastrar na Plataforma
-    - [X] Backend
-    - [X] Frontend
-- UC3 Validar Conta
-    - [X] Backend
-    - [X] Frontend
-- UC4 Criar Projeto de Extensão
-    - [X] Backend
-    - [ ] Frontend (stuani & afonso)
-- UC7 Criar Formulário de Inscrição para o Projeto de Extensão
-    - [x] Backend (bea)
-    - [ ] Frontend
-- UC8 Candidatar-se ao Projeto
-    - [x] Backend (bea)
-    - [ ] Frontend
-- UC9 Avaliar Inscrição do Candidato
-    - [ ] Backend (bea)
-    - [ ] Frontend
-- UC14 Listar Projetos de Extensão
-    - [X] Backend
-    - [ ] Frontend (stuani & afonso)
+### `ufrgs-bridge`
 
-### Prioridade Média-Alta
+This folder contains all the general configurations and settings that affect both the back-end and front-end. It includes settings related to the entire project, such as middleware, installed apps, and other configurations.
 
-- UC13 Acessar Perfil
-    - [X] Backend
-    - [ ] Frontend
-- UC15 Pesquisar Projetos de Extensão
-    - [X] Backend
-    - [ ] Frontend
-- UC18 Editar Informações do Projeto de Extensão
-    - [ ] Backend
-    - [ ] Frontend
+### `web`
 
-### Prioridade Média-Baixa
+This folder contains everything needed to display what the user should see, acting as the Template in the MVT architecture.
 
-- UC10 Adicionar Atividade do Projeto de Extensão
-    - [ ] Backend
-    - [ ] Frontend
-- UC11 Propor Registro de Atividade do Projeto de Extensão
-    - [ ] Backend
-    - [ ] Frontend
-- UC12 Avaliar Proposta de Atividade Realizada
-    - [ ] Backend
-    - [ ] Frontend
-- UC16 Trocar Disponibilidade para Inscrição no Projeto de Extensão
-    - [ ] Backend
-    - [ ] Frontend
-- UC17 Trocar Disponibilidade de Realização de Atividades no Projeto
-    - [ ] Backend
-    - [ ] Frontend
+#### `components`
+This subfolder contains React components that structure the front-end views.
 
-### Prioridade Baixa
+##### `Auth.js`
+This component manages user authentication, including login and registration forms.
 
-- UC5 Sugerir Ideia de Projeto de Extensão
-    - [ ] Backend
-    - [ ] Frontend
-- UC6 Avaliar Ideia de Projeto de Extensão
-    - [ ] Backend
-    - [ ] Frontend
+##### `HomePage.js`
+This component renders the homepage of the application, displaying relevant information and links based on the user's role and permissions.
+
+##### `ProfilePage.js`
+This component displays and allows editing of the user's profile information, such as name, email, and other personal details.
